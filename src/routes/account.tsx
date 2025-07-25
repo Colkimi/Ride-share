@@ -8,8 +8,6 @@ export const Route = createFileRoute('/account')({
 
 function RouteComponent() {
   return (
-    <Layout>
-        <Account />
-    </Layout>
+      <Account />
   )
 }

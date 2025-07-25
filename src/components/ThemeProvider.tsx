@@ -66,9 +66,10 @@ export function ThemeProvider({
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext)
 
-  if (context === undefined)
-    throw new Error("Error loading theme")
+  if (context === undefined) {
     console.log("useTheme must be used within a ThemeProvider")
+    throw new Error("Error loading theme")
+  }
 
   return context
 }

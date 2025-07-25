@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import Layout from '../components/Layout';
 import { CustomerDashboard } from '../components/CustomerDashboard';
 import { AdminDashboard } from '../components/AdminDashboard';
 import DriverDashboard from '../components/DriverDashboard';
@@ -16,22 +15,18 @@ export function Dashboard() {
 
   if (loading) {
     return (
-      <Layout>
-        <div className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Loading user data...</h2>
-        </div>
-      </Layout>
+      <div className="p-6">
+        <h2 className="text-xl font-semibold mb-4">Loading user data...</h2>
+      </div>
     );
   }
 
   if (!isAuthenticated) {
     return (
-      <Layout>
-        <div className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Please log in to access the dashboard.</h2>
-          <p><Link to="/login" className='text-blue-700 underline'>Sign in</Link></p>
-        </div>
-      </Layout>
+      <div className="p-6">
+        <h2 className="text-xl font-semibold mb-4">Please log in to access the dashboard.</h2>
+        <p><Link to="/login" className='text-blue-700 underline'>Sign in</Link></p>
+      </div>
     );
   }
 
@@ -52,9 +47,5 @@ export function Dashboard() {
     }
   };
 
-  return (
-    <Layout>
-      {renderDashboard()}
-    </Layout>
-  );
+  return renderDashboard();
 }

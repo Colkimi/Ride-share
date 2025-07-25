@@ -62,28 +62,47 @@ export interface DriverDashboardData {
 }
 
 export interface AdminDashboardData {
-  totalUsers: number;
-  totalRevenue: number;
-  totalBookings: number;
-  activeDrivers: number;
-  growthMetrics: {
-    userGrowth: number;
-    revenueGrowth: number;
-    bookingGrowth: number;
+  systemOverview: {
+    totalUsers: number;
+    totalDrivers: number;
+    totalBookings: number;
+    totalRevenue: number;
+    activeBookings: number;
   };
-  monthlyStats: Array<{
-    month: string;
-    users: number;
-    revenue: number;
-    bookings: number;
+  monthlyAnalytics: Array<{
+    day: string;
+    income: number;
+    expenditure: number;
+    profit: number;
+    bookingCount: number | null;
   }>;
-  topPerformingDrivers: Array<{
-    id: string;
-    name: string;
-    earnings: number;
-    trips: number;
-    rating: number;
+  incomeDistribution: Array<{
+    range: string;
+    count: number;
+    percentage: number;
   }>;
+  rideTimeAnalytics: {
+    morning: {
+      count: number;
+      percentage: number;
+    };
+    afternoon: {
+      count: number;
+      percentage: number;
+    };
+    evening: {
+      count: number;
+      percentage: number;
+    };
+  };
+  pendingActions: {
+    driverVerifications: number;
+    systemMaintenance: number;
+    newDiscounts: number;
+    governmentDeals: number;
+  };
+  weeklyRevenue: number;
+  revenueTrend: number;
 }
 
 export interface SystemStatusData {

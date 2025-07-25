@@ -1,24 +1,38 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getBookings, deleteBooking, updateBooking, type Booking, type UpdateBookingData, Status } from '@/api/Bookings'
+import { getDrivers, type Driver } from '@/api/Driver'
 import styles from '../FormStyles.module.css'
 import { Toaster, toast } from 'sonner'
 import { useAuth } from '@/hooks/useAuth'
 import { CreateBookingForm } from '@/Forms/CreateBookingForm'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react'
+import { DriverAssignmentModal } from './DriverAssignment';
 
 function AdminBookingList() {
   const queryClient = useQueryClient()
   const { user } = useAuth()
-  const { data: allBookings, isLoading, isError } = useQuery<Booking[]>({
-    queryKey: ['bookings'],
-    queryFn: getBookings,
+  
+  const [page, setPage] = useState(1)
+  const [limit, setLimit] = useState(10)
+  
+  const { data: paginatedData, isLoading, isError } = useQuery({
+    queryKey: ['bookings', page, limit],
+    queryFn: () => getBookings(page, limit),
   })
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteBooking(id),
     onSuccess: () => {
       toast.success('Booking deleted successfully')
-      queryClient.invalidateQueries({ queryKey: ['bookings'] })
+      queryClient.invalidateQueries({ queryKey: ['bookings', page, limit] })
     },
     onError: () => {
       toast.error('Failed to delete booking')
@@ -29,7 +43,7 @@ function AdminBookingList() {
     mutationFn: (data: UpdateBookingData) => updateBooking(data),
     onSuccess: () => {
       toast.success('Booking updated successfully')
-      queryClient.invalidateQueries({ queryKey: ['bookings'] })
+      queryClient.invalidateQueries({ queryKey: ['bookings', page, limit] })
       setEditingBooking(null)
     },
     onError: () => {
@@ -38,12 +52,18 @@ function AdminBookingList() {
   })
 
   const [editingBooking, setEditingBooking] = useState<Booking & { id: number } | null>(null)
+  const [showCreateForm, setShowCreateForm] = useState(false)
+  const [showContent, setShowContent] = useState(true)
+  const [assigningBooking, setAssigningBooking] = useState<Booking | null>(null);
 
+  // Fetch driver data if user is a driver
+  const { data: driverData } = useQuery({
+    queryKey: ['driver', user?.userId],
+    queryFn: () => user?.role === 'driver' && user?.userId ? getDrivers() : undefined,
+    enabled: user?.role === 'driver' && !!user?.userId,
+  });
 
-  const bookings = user?.role === 'admin' 
-    ? allBookings 
-    : allBookings?.filter(booking => (booking as any).userId === user?.userId) || []
-
+  // Fix the bookings filtering logic
   if (isLoading) {
     return <div className="p-6">Loading bookings...</div>
   }
@@ -51,6 +71,30 @@ function AdminBookingList() {
   if (isError) {
     return <div className="p-6">Error loading bookings.</div>
   }
+
+  const bookings = (() => {
+    if (!paginatedData?.bookings) return [];
+    
+    switch (user?.role) {
+      case 'admin':
+        // Admins can see all bookings
+        return paginatedData.bookings;
+      case 'customer':
+        // Customers only see their own bookings
+        return paginatedData.bookings.filter(booking => 
+          (booking as any).user_id === user?.userId || 
+          (booking as any).customer_id === user?.userId
+        );
+      case 'driver':
+        // Drivers only see bookings assigned to them
+        const driver = Array.isArray(driverData) ? driverData[0] : undefined;
+        return paginatedData.bookings.filter(booking => 
+          booking.driver_id === driver?.driver_id
+        );
+      default:
+        return [];
+    }
+  })();
 
   const handleDelete = (id?: number) => {
     if (!id) return
@@ -78,21 +122,59 @@ function AdminBookingList() {
     }
     updateMutation.mutate(updatedBooking as UpdateBookingData)
   }
- const [showCreateForm, setShowCreateForm] = useState(false)
- const [showContent, setShowContent] = useState(true)
+
+  const handleAssignDriver = (booking: Booking) => {
+    setAssigningBooking(booking);
+  };
+
+  const totalPages = paginatedData?.totalPages || 0
+
+  const getPageNumbers = () => {
+    const delta = 2; 
+    const range = [];
+    const rangeWithDots = [];
+
+    if (totalPages <= 1) return [1];
+
+    for (let i = Math.max(2, page - delta); i <= Math.min(totalPages - 1, page + delta); i++) {
+      range.push(i);
+    }
+
+    rangeWithDots.push(1);
+
+    if (page - delta > 2) {
+      rangeWithDots.push('...');
+    }
+
+    range.forEach(p => {
+      if (p !== 1 && p !== totalPages) {
+        rangeWithDots.push(p);
+      }
+    });
+
+    if (page + delta < totalPages - 1) {
+      rangeWithDots.push('...');
+    }
+
+    if (totalPages > 1) {
+      rangeWithDots.push(totalPages);
+    }
+
+    return rangeWithDots;
+  };
+
   return ( 
     <div className="p-6">
       <Toaster richColors position="top-center" closeButton={false} />
       
       <div className="flex justify-between items-center mb-6">
-        { showContent && (
+        {showContent && (
         <h1 className="text-2xl font-bold">
           {user?.role === 'admin' ? 'All Bookings' : 'My Bookings'}
         </h1>
         )}
         {showCreateForm && (
-        <div 
-          >
+        <div>
          <CreateBookingForm />
           <img src='/cancel.png' width={25} className='absolute right-1 ' onClick={() => {
            setShowCreateForm(false)
@@ -100,13 +182,11 @@ function AdminBookingList() {
           }} />
         </div>
           )}
-        {user?.role === 'admin' | user?.role === 'customer' &&  (
-          showContent &&(
+        {(user?.role === 'admin' || user?.role === 'customer') && (
+          showContent && (
         <button
        className={`${styles.actionButton} ${styles.edit}`}
-     onClick={() => {
-window.location.href = '/create'
-      }}     
+     onClick={() => window.location.href = '/create'}     
        >
       Create New Booking
        </button>
@@ -123,7 +203,127 @@ window.location.href = '/create'
         </div>
       )}
 
-      {bookings &&  bookings.length > 0 ? showContent && (
+      {/* Enhanced Pagination Controls */}
+      <div className="bg-white rounded-lg shadow p-4 mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+          {/* Items per page selector */}
+          <div className="flex items-center space-x-2">
+            <label className="text-sm font-medium text-gray-700">Items per page:</label>
+            <select 
+              value={limit} 
+              onChange={(e) => {
+                setLimit(Number(e.target.value))
+                setPage(1) // Reset to first page when changing page size
+              }}
+              className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
+
+          {/* Page info */}
+          <div className="text-sm text-gray-600">
+            Showing {Math.min((page - 1) * limit + 1, paginatedData?.total || 0)} to{' '}
+            {Math.min(page * limit, paginatedData?.total || 0)} of {paginatedData?.total || 0} bookings
+          </div>
+
+          {/* Navigation buttons */}
+          {totalPages > 1 && (
+            <div className="flex items-center space-x-1">
+              {/* First Page */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(1)}
+                disabled={page === 1}
+                className="px-2"
+                title="First page"
+              >
+                <ChevronsLeft className="w-4 h-4" />
+              </Button>
+
+              {/* Previous Page */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="px-2"
+                title="Previous page"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+
+              {/* Page Numbers */}
+              {getPageNumbers().map((pageNum, index) => (
+                <Button
+                  key={index}
+                  variant={pageNum === page ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => typeof pageNum === 'number' && setPage(pageNum)}
+                  disabled={pageNum === '...'}
+                  className="min-w-[40px]"
+                >
+                  {pageNum}
+                </Button>
+              ))}
+
+              {/* Next Page */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="px-2"
+                title="Next page"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+
+              {/* Last Page */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(totalPages)}
+                disabled={page === totalPages}
+                className="px-2"
+                title="Last page"
+              >
+                <ChevronsRight className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {/* Quick jump to page */}
+        {totalPages > 10 && (
+          <div className="flex items-center justify-center mt-4 pt-4 border-t">
+            <div className="flex items-center space-x-2">
+              <label className="text-sm font-medium text-gray-700">Jump to page:</label>
+              <input
+                type="number"
+                min="1"
+                max={totalPages}
+                value={page}
+                onChange={(e) => {
+                  const newPage = parseInt(e.target.value);
+                  if (newPage >= 1 && newPage <= totalPages) {
+                    setPage(newPage);
+                  }
+                }}
+                className="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <span className="text-sm text-gray-500">of {totalPages}</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {paginatedData?.bookings && paginatedData.bookings.length > 0 ? (
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <table className={styles.table}>
             <thead>
@@ -141,7 +341,7 @@ window.location.href = '/create'
               </tr>
             </thead>
             <tbody>
-              {bookings.map((booking) => (
+              {paginatedData.bookings.map((booking) => (
                 <tr key={booking.id}>
                   <td>{booking.id}</td>
                   <td>
@@ -164,6 +364,7 @@ window.location.href = '/create'
                       {booking.status}
                     </span>
                   </td>
+
                   <td>${booking.fare?.toFixed(2)}</td>
                   <td>{booking.distance?.toFixed(2)} km</td>
                   <td>{booking.duration?.toFixed(0)} min</td>
@@ -175,6 +376,15 @@ window.location.href = '/create'
                       >
                         Edit
                       </button>
+                      {/* Add the Assign Driver button here */}
+                      {!booking.driver_id && (booking.status === Status.Requested || booking.status === Status.Accepted) && (
+                        <button 
+                          className={`${styles.actionButton} bg-blue-500 hover:bg-blue-600 text-white ml-2`}
+                          onClick={() => handleAssignDriver(booking)}
+                        >
+                          Assign Driver
+                        </button>
+                      )}
                       <button 
                         className={`${styles.actionButton} ${styles.delete}`} 
                         onClick={() => handleDelete(booking.id)}
@@ -201,6 +411,22 @@ window.location.href = '/create'
           )}
         </div>
       )}
+
+      {/* Add the Driver Assignment Modal */}
+      {assigningBooking && (
+        <DriverAssignmentModal
+          booking={assigningBooking}
+          isOpen={!!assigningBooking}
+          onClose={() => setAssigningBooking(null)}
+          onSuccess={() => {
+            setAssigningBooking(null);
+            // Refresh the bookings list
+            queryClient.invalidateQueries({ queryKey: ['bookings'] });
+          }}
+        />
+      )}
+
+      {/* ...rest of existing code... */}
     </div>
   )
 }

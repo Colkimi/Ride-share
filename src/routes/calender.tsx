@@ -8,8 +8,6 @@ export const Route = createFileRoute('/calender')({
 
 function RouteComponent() {
   return (
-    <Layout>
       <Calendar />
-    </Layout>
   )
 }

@@ -5,6 +5,7 @@ import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
 import type { QueryClient } from '@tanstack/react-query'
 import { ThemeProvider } from "@/components/ThemeProvider.tsx"
 import Layout from '@/components/Layout.tsx'
+import { ChatProvider } from '@/contexts/ChatContext.tsx'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -12,15 +13,20 @@ interface MyRouterContext {
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
+    
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <>
         <Header />
-        <Outlet />
+        <Layout>
+          <ChatProvider>
+            <Outlet />
+          </ChatProvider>
+        </Layout>
         <TanStackRouterDevtools />
-
         <TanStackQueryLayout />
       </>
     </ThemeProvider>
   ),
 })
+
 

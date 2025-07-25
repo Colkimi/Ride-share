@@ -6,6 +6,9 @@ import { routeTree } from './routeTree.gen'
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 import { setupTokenRefreshInterval } from './api/tokenRefresh'
+import { ThemeProvider } from './components/ThemeProvider'
+import { Router } from '@tanstack/react-router'
+import { ChatProvider } from './contexts/ChatContext.tsx'
 
 
 const router = createRouter({

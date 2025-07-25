@@ -8,8 +8,7 @@ export const Route = createFileRoute('/support')({
 
 function RouteComponent() {
   return( 
-  <Layout>
     <HelpSupport />
-  </Layout>  
+ 
   )
 }

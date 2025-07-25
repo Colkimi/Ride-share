@@ -12,6 +12,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 code {
@@ -139,16 +141,7 @@ code {
 }
 
 @layer base {
-  :root {
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
-  }
+
 
   .dark {
     --sidebar: oklch(0.205 0 0);
@@ -229,4 +222,67 @@ code {
   --sidebar-border: oklch(0.5 0.01 286.32 / 0.3);
   --sidebar-ring: oklch(0.6 0.2 293.009);
 }
+.sidebar {
+  background-color: var(--sidebar);
+  color: var(--sidebar-foreground);
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 30;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 16rem;
+  background-color: var(--background);
+  border-right: 1px solid var(--border);
+  z-index: 40;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.sidebar-cover.open {
+  transform: translateX(0);
+}
+/* Ensure proper sidebar content spacing */
+@media (min-width: 768px) {
+  .sidebar-open main {
+    margin-left: 16rem;
+  }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 767px) {
+  .sidebar-open main {
+    margin-left: 0;
+  }
+}
+
+main {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.sidebar-content-wrapper {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.sidebar-main-content {
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
 

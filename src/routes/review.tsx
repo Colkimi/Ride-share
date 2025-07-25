@@ -8,8 +8,6 @@ export const Route = createFileRoute('/review')({
 
 function RouteComponent() {
   return (
-    <Layout >
       <Reviews />
-    </Layout>
   )
 }

@@ -20,7 +20,7 @@ interface DriverLocationSimulatorProps {
 }
 
 const DriverLocationSimulatorComponent: React.FC<DriverLocationSimulatorProps> = ({ 
-  driverId = 1 
+  driverId = 4029  
 }) => {
   const [simulator, setSimulator] = useState<DriverLocationSimulator | null>(null);
   const [isRunning, setIsRunning] = useState(false);
@@ -32,7 +32,6 @@ const DriverLocationSimulatorComponent: React.FC<DriverLocationSimulatorProps> =
     const newSimulator = new DriverLocationSimulator(driverId, 3000);
     setSimulator(newSimulator);
     
-    // Override console methods to capture logs
     const originalLog = console.log;
     const originalError = console.error;
     
@@ -61,7 +60,6 @@ const DriverLocationSimulatorComponent: React.FC<DriverLocationSimulatorProps> =
         await simulator.start();
         setIsRunning(true);
         
-        // Update location display
         intervalRef.current = setInterval(() => {
           const location = simulator.getCurrentLocation();
           setCurrentLocation(location);

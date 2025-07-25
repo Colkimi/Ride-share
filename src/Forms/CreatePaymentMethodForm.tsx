@@ -9,10 +9,7 @@ const formSchema = z.object({
   payment_type: z.string().min(1, 'Payment type is required'),
   amount: z.number().optional(),
   currency: z.string().optional(),
-  phone: z.string().optional(),
-  accountRef: z.string().optional(),
-  transactionDesc: z.string().optional(),
-  details: z.string().optional(),
+  userId: z.number().int().positive('User ID must be a positive integer').optional(),
   is_default: z.boolean().optional(),
 })
 
@@ -45,6 +42,7 @@ export function CreatePaymentMethodForm({ onSuccess }: CreatePaymentMethodFormPr
       amount: undefined,
       currency: '',
       is_default: true,
+      userId: Number(localStorage.getItem('userId')) || 0,
     } as FormData,
     onSubmit: async ({ value }) => {
       const res = formSchema.safeParse(value)

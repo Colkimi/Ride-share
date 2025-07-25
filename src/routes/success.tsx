@@ -27,9 +27,9 @@ function RouteComponent() {
         rideType,
         startTime: startTime ? new Date(startTime).toLocaleString() : '10:00 AM',
         endTime: endTime ? new Date(endTime).toLocaleString() : '11:00 AM',
-        price: price ? `$${price}` : '$5',
-        pickup,
-        destination
+        price: localStorage.getItem('fare'),
+        pickup: localStorage.getItem('pickup address') || pickup,
+        destination: localStorage.getItem('dropoff address') || destination
       })
     }, 1000)
   }, [])

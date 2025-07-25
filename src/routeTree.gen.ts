@@ -15,10 +15,14 @@ import { Route as ThemeRouteImport } from './routes/theme'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as SuccessRouteImport } from './routes/success'
 import { Route as SignUpRouteImport } from './routes/sign-up'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReviewRouteImport } from './routes/review'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LandingRouteImport } from './routes/landing'
 import { Route as FailedRouteImport } from './routes/failed'
+import { Route as EarningsRouteImport } from './routes/earnings'
+import { Route as DriverRegistrationRouteImport } from './routes/driver-registration'
 import { Route as DriverRouteImport } from './routes/driver'
 import { Route as DriveRouteImport } from './routes/drive'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -28,6 +32,7 @@ import { Route as BookingsRouteImport } from './routes/bookings'
 import { Route as AdminDashboardRouteImport } from './routes/adminDashboard'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as UsersCreateRouteImport } from './routes/users.create'
 import { Route as PaymentBookingIdRouteImport } from './routes/payment/bookingId'
 
@@ -61,9 +66,19 @@ const SignUpRoute = SignUpRouteImport.update({
   path: '/sign-up',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReviewRoute = ReviewRouteImport.update({
   id: '/review',
   path: '/review',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -79,6 +94,16 @@ const LandingRoute = LandingRouteImport.update({
 const FailedRoute = FailedRouteImport.update({
   id: '/failed',
   path: '/failed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EarningsRoute = EarningsRouteImport.update({
+  id: '/earnings',
+  path: '/earnings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DriverRegistrationRoute = DriverRegistrationRouteImport.update({
+  id: '/driver-registration',
+  path: '/driver-registration',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DriverRoute = DriverRouteImport.update({
@@ -126,6 +151,10 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LayoutRoute = LayoutRouteImport.update({
+  id: '/_layout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UsersCreateRoute = UsersCreateRouteImport.update({
   id: '/create',
   path: '/create',
@@ -147,10 +176,14 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/drive': typeof DriveRoute
   '/driver': typeof DriverRoute
+  '/driver-registration': typeof DriverRegistrationRoute
+  '/earnings': typeof EarningsRoute
   '/failed': typeof FailedRoute
   '/landing': typeof LandingRoute
   '/login': typeof LoginRoute
+  '/notifications': typeof NotificationsRoute
   '/review': typeof ReviewRoute
+  '/settings': typeof SettingsRoute
   '/sign-up': typeof SignUpRoute
   '/success': typeof SuccessRoute
   '/support': typeof SupportRoute
@@ -170,10 +203,14 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/drive': typeof DriveRoute
   '/driver': typeof DriverRoute
+  '/driver-registration': typeof DriverRegistrationRoute
+  '/earnings': typeof EarningsRoute
   '/failed': typeof FailedRoute
   '/landing': typeof LandingRoute
   '/login': typeof LoginRoute
+  '/notifications': typeof NotificationsRoute
   '/review': typeof ReviewRoute
+  '/settings': typeof SettingsRoute
   '/sign-up': typeof SignUpRoute
   '/success': typeof SuccessRoute
   '/support': typeof SupportRoute
@@ -185,6 +222,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_layout': typeof LayoutRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/adminDashboard': typeof AdminDashboardRoute
@@ -194,10 +232,14 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/drive': typeof DriveRoute
   '/driver': typeof DriverRoute
+  '/driver-registration': typeof DriverRegistrationRoute
+  '/earnings': typeof EarningsRoute
   '/failed': typeof FailedRoute
   '/landing': typeof LandingRoute
   '/login': typeof LoginRoute
+  '/notifications': typeof NotificationsRoute
   '/review': typeof ReviewRoute
+  '/settings': typeof SettingsRoute
   '/sign-up': typeof SignUpRoute
   '/success': typeof SuccessRoute
   '/support': typeof SupportRoute
@@ -219,10 +261,14 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/drive'
     | '/driver'
+    | '/driver-registration'
+    | '/earnings'
     | '/failed'
     | '/landing'
     | '/login'
+    | '/notifications'
     | '/review'
+    | '/settings'
     | '/sign-up'
     | '/success'
     | '/support'
@@ -242,10 +288,14 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/drive'
     | '/driver'
+    | '/driver-registration'
+    | '/earnings'
     | '/failed'
     | '/landing'
     | '/login'
+    | '/notifications'
     | '/review'
+    | '/settings'
     | '/sign-up'
     | '/success'
     | '/support'
@@ -256,6 +306,7 @@ export interface FileRouteTypes {
     | '/users/create'
   id:
     | '__root__'
+    | '/_layout'
     | '/about'
     | '/account'
     | '/adminDashboard'
@@ -265,10 +316,14 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/drive'
     | '/driver'
+    | '/driver-registration'
+    | '/earnings'
     | '/failed'
     | '/landing'
     | '/login'
+    | '/notifications'
     | '/review'
+    | '/settings'
     | '/sign-up'
     | '/success'
     | '/support'
@@ -280,6 +335,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  LayoutRoute: typeof LayoutRoute
   AboutRoute: typeof AboutRoute
   AccountRoute: typeof AccountRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
@@ -289,10 +345,14 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   DriveRoute: typeof DriveRoute
   DriverRoute: typeof DriverRoute
+  DriverRegistrationRoute: typeof DriverRegistrationRoute
+  EarningsRoute: typeof EarningsRoute
   FailedRoute: typeof FailedRoute
   LandingRoute: typeof LandingRoute
   LoginRoute: typeof LoginRoute
+  NotificationsRoute: typeof NotificationsRoute
   ReviewRoute: typeof ReviewRoute
+  SettingsRoute: typeof SettingsRoute
   SignUpRoute: typeof SignUpRoute
   SuccessRoute: typeof SuccessRoute
   SupportRoute: typeof SupportRoute
@@ -346,11 +406,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignUpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/review': {
       id: '/review'
       path: '/review'
       fullPath: '/review'
       preLoaderRoute: typeof ReviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -372,6 +446,20 @@ declare module '@tanstack/react-router' {
       path: '/failed'
       fullPath: '/failed'
       preLoaderRoute: typeof FailedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/earnings': {
+      id: '/earnings'
+      path: '/earnings'
+      fullPath: '/earnings'
+      preLoaderRoute: typeof EarningsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/driver-registration': {
+      id: '/driver-registration'
+      path: '/driver-registration'
+      fullPath: '/driver-registration'
+      preLoaderRoute: typeof DriverRegistrationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/driver': {
@@ -437,6 +525,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_layout': {
+      id: '/_layout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof LayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/users/create': {
       id: '/users/create'
       path: '/create'
@@ -465,6 +560,7 @@ const UsersRouteChildren: UsersRouteChildren = {
 const UsersRouteWithChildren = UsersRoute._addFileChildren(UsersRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  LayoutRoute: LayoutRoute,
   AboutRoute: AboutRoute,
   AccountRoute: AccountRoute,
   AdminDashboardRoute: AdminDashboardRoute,
@@ -474,10 +570,14 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   DriveRoute: DriveRoute,
   DriverRoute: DriverRoute,
+  DriverRegistrationRoute: DriverRegistrationRoute,
+  EarningsRoute: EarningsRoute,
   FailedRoute: FailedRoute,
   LandingRoute: LandingRoute,
   LoginRoute: LoginRoute,
+  NotificationsRoute: NotificationsRoute,
   ReviewRoute: ReviewRoute,
+  SettingsRoute: SettingsRoute,
   SignUpRoute: SignUpRoute,
   SuccessRoute: SuccessRoute,
   SupportRoute: SupportRoute,

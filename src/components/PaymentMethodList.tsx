@@ -103,6 +103,7 @@ function PaymentMethodList() {
                 <td>{pm.payment_type}</td>
                 <td>{pm.amount}</td>
                 <td>{pm.currency}</td>
+                <td>{pm.userId}</td>
                 <td>{pm.details}</td>
                 <td className={styles.actions}>
                   <button 
@@ -148,6 +149,7 @@ function EditPaymentMethodForm({ paymentMethod, onCancel, onUpdate }: EditPaymen
     payment_type: paymentMethod.payment_type,
     amount: paymentMethod.amount,
     currency: paymentMethod.currency,
+    userId: paymentMethod.userId,
     details: paymentMethod.details,
   })
 

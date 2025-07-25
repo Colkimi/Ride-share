@@ -1,5 +1,6 @@
+import { API_BASE_URL } from './apiUtils';
 export enum Status {
-  Uverified = 'verified',
+  Verified = 'verified',
   Unverified = 'unverified',
   REJECTED = 'rejected',
 }
@@ -51,10 +52,113 @@ export const getDrivers = async (): Promise<Driver[]> => {
   await handleApiResponse(response);
   return response.json();
 };
+export async function getDriverBookings(token: string, driverId?: number) {
+  console.log('Fetching driver bookings with token:', token ? 'present' : 'missing', 'driverId:', driverId);
+  const url = driverId 
+    ? `${API_BASE_URL}/driver/bookings?driver_id=${driverId}`
+    : `${API_BASE_URL}/driver/bookings`;
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  console.log('Driver bookings response status:', res.status);
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error('Driver bookings error:', errorText);
+    throw new Error(`Failed to fetch driver bookings: ${res.status} ${errorText}`);
+  }
+  const data = await res.json();
+  console.log('Driver bookings data:', data);
+  return data;
+}
+
+export async function getDriverPendingBookings(token: string, driverId?: number) {
+  console.log('Fetching pending bookings with token:', token ? 'present' : 'missing', 'driverId:', driverId);
+  const url = driverId 
+    ? `${API_BASE_URL}/driver/bookings/pending?driver_id=${driverId}`
+    : `${API_BASE_URL}/driver/bookings/pending`;
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  console.log('Pending bookings response status:', res.status);
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error('Pending bookings error:', errorText);
+    throw new Error(`Failed to fetch pending bookings: ${res.status} ${errorText}`);
+  }
+  const data = await res.json();
+  console.log('Pending bookings data:', data);
+  return data;
+}
+
+export async function getDriverStats(token: string, driverId: number) {
+  const res = await fetch(`${API_BASE_URL}/driver/${driverId}/stats`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error('Failed to fetch driver stats');
+  return res.json();
+}
+
+export async function updateDriverAvailability(token: string, driverId: number, isAvailable: boolean) {
+  const res = await fetch(`${API_BASE_URL}/driver/${driverId}/availability`, {
+    method: 'PATCH',
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ isAvailable }),
+  });
+  if (!res.ok) throw new Error('Failed to update driver availability');
+  return res.json();
+}
+
+export const acceptDriverBooking = async (token: string, bookingId: number) => {
+  const response = await fetch(`${API_BASE_URL}/driver/bookings/${bookingId}/accept`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.message || `Failed to accept booking: ${response.status}`);
+  }
+
+  return response.json();
+};
+
+export const rejectDriverBooking = async (token: string, bookingId: number) => {
+  const response = await fetch(`${API_BASE_URL}/driver/bookings/${bookingId}/reject`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.message || `Failed to reject booking: ${response.status}`);
+  }
+
+  return response.json();
+};
 
 export const getDriver = async (id: number): Promise<Driver> => {
   const accessToken = localStorage.getItem('accessToken');
   const response = await fetch(`${url}/driver/${id}`, {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+    },
+  });
+  await handleApiResponse(response);
+  return response.json();
+};
+
+export const getDriverByUserId = async (userId: number): Promise<Driver> => {
+  const accessToken = localStorage.getItem('accessToken');
+  const response = await fetch(`${url}/driver/by-user/${userId}`, {
     headers: {
       'Authorization': `Bearer ${accessToken}`,
     },

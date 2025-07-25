@@ -17,41 +17,76 @@ import Loader from './Loaders'
 
 function VehicleManagement() {
   const queryClient = useQueryClient()
-  const { user } = useAuth()
+  const { user, loading: authLoading } = useAuth() 
   let userId = localStorage.getItem('userId');
-  console.log(userId)
-  const { data: vehicles, isLoading, isError } = useQuery<Vehicle[]>({
-    queryKey: ['vehicles'],
+  
+  const [page, setPage] = useState(1)
+  const [limit, setLimit] = useState(10)
+  
+  const { data: vehicleData = { vehicles: [], total: 0 }, isLoading, isError } = useQuery({
+    queryKey: ['vehicle', page, limit, user?.userId], 
     queryFn: async () => {
-      if (!user || !userId) {
-      console.log('No user or userId, returning empty array');
-        return [];
+      if (!user) {
+        console.log('User not loaded yet, skipping API call');
+        return { vehicles: [], total: 0 };
       }
-      let fetchedVehicles;
-      if (user.role === 'admin') {
-        console.log('Fetching all vehicles for admin');
-        fetchedVehicles = await getVehicles();
+      
+      if (!userId) {
+        console.log('No userId found in localStorage');
+        return { vehicles: [], total: 0 };
       }
-      else {
-        console.log(`Fetching vehicles for driver ${user.userId}`);
-        fetchedVehicles = await getVehiclesByDriverId(parseInt(userId));
+      
+      let fetchedData;
+      try {
+        if (user.role === 'admin') {
+          console.log('Fetching all vehicles for admin, page:', page, 'limit:', limit);
+          fetchedData = await getVehicles(page, limit);
+        } else {
+          console.log(`Fetching vehicles for driver ${user.userId}, page:`, page, 'limit:', limit);
+          fetchedData = await getVehiclesByDriverId(parseInt(userId), page, limit);
+        }
+        
+        console.log('Fetched vehicles:', fetchedData);
+        
+        if (Array.isArray(fetchedData)) {
+          const startIndex = (page - 1) * limit;
+          const endIndex = startIndex + limit;
+          const paginatedVehicles = fetchedData.slice(startIndex, endIndex);
+          
+          return { 
+            vehicles: paginatedVehicles, 
+            total: fetchedData.length 
+          };
+        } else if (fetchedData && typeof fetchedData === 'object') {
+          return {
+            vehicles: fetchedData.vehicles || [],
+            total: fetchedData.total  || 0
+          };
+        } else {
+          return { vehicles: [], total: 0 };
+        }
+      } catch (error) {
+        console.error('Error fetching vehicles:', error);
+        return { vehicles: [], total: 0 };
       }
-       console.log('Fetched vehicles:', fetchedVehicles);
-      return getVehiclesByDriverId(parseInt(userId));
     },
+    enabled: !!user, 
   })
+
+  const vehicles = vehicleData.vehicles;
+  const totalVehicles = vehicleData.total;
+  const totalPages = Math.ceil(totalVehicles / limit);
 
   const createMutation = useMutation({
     mutationFn: (data: CreateVehicleData) => createVehicle(data),
     onSuccess: () => {
       toast.success('Vehicle created successfully')
-      queryClient.invalidateQueries({ queryKey: ['vehicles'] })
+      queryClient.invalidateQueries({ queryKey: ['vehicle'] })
       setShowCreateForm(false)
-      console.log('Query invalidated after creating vehicle');
     },
     onError: (error) => {
-      toast.error('Failed to create vehicle');
-      console.error('Error creating vehicle:',error);
+      toast.error('Failed to create vehicle')
+      console.error('Error creating vehicle:', error)
     },
   })
 
@@ -59,7 +94,7 @@ function VehicleManagement() {
     mutationFn: (data: UpdateVehicleData) => updateVehicle(data),
     onSuccess: () => {
       toast.success('Vehicle updated successfully')
-      queryClient.invalidateQueries({ queryKey: ['vehicles'] })
+      queryClient.invalidateQueries({ queryKey: ['vehicle'] })
       setEditingVehicle(null)
     },
     onError: () => {
@@ -71,7 +106,7 @@ function VehicleManagement() {
     mutationFn: (id: number) => deleteVehicle(id),
     onSuccess: () => {
       toast.success('Vehicle deleted successfully')
-      queryClient.invalidateQueries({ queryKey: ['vehicles'] })
+      queryClient.invalidateQueries({ queryKey: ['vehicle'] })
     },
     onError: () => {
       toast.error('Failed to delete vehicle')
@@ -81,51 +116,50 @@ function VehicleManagement() {
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null)
   const [showCreateForm, setShowCreateForm] = useState(false)
 
-  if (isLoading) {
-    return <div className="p-6"><Loader /></div>
+  const handleCreate = (data: CreateVehicleData) => {
+    createMutation.mutate(data)
   }
 
-  if (isError) {
-    return <div className="p-6">Error loading vehicles.</div>
-  }
-
-  const handleDelete = (id?: number) => {
-    if (id === undefined) return
-    if (window.confirm('Are you sure you want to delete this vehicle?')) {
-      deleteMutation.mutate(id)
-    }
-  }
-
-  const handleEditClick = (vehicle: Vehicle) => {
-    if (vehicle.vehicle_id === undefined) {
-      console.error('Vehicle id is undefined, cannot edit')
+  const handleUpdate = (data: UpdateVehicleData) => {
+    if (!data.vehicle_id) {
+      toast.error('Vehicle ID is required for update')
       return
     }
-    setEditingVehicle(vehicle)
+    updateMutation.mutate(data)
   }
 
   const handleCancelEdit = () => {
     setEditingVehicle(null)
   }
 
-const handleUpdate = (updatedVehicle: UpdateVehicleData) => {
-  if (updatedVehicle.vehicle_id === undefined) {
-    console.error('Vehicle id is undefined, cannot update');
-    return;
+  const handleEditClick = (vehicle: Vehicle) => {
+    setEditingVehicle(vehicle)
   }
-  if (user?.role !== 'admin') {
-    updatedVehicle.approved = false;
-  }
-  updateMutation.mutate(updatedVehicle);
-};
 
-const handleCreate = (newVehicle: CreateVehicleData & { driverId?: number }) => {
-  if (user?.role !== 'admin') {
-    newVehicle.driverId = user?.userId;
-    newVehicle.approved = false; 
+  const handleDelete = (id: number | undefined) => {
+    if (!id) {
+      toast.error('Invalid vehicle ID')
+      return
+    }
+    if (window.confirm('Are you sure you want to delete this vehicle?')) {
+      deleteMutation.mutate(id)
+    }
   }
-  createMutation.mutate(newVehicle);
-};
+
+  // Page change handler with bounds checking
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
+
+  // Show loading while auth is loading
+  if (!user) {
+    return <Loader />
+  }
+
+  if (isLoading) return <Loader />
+  if (isError) return <div>Error loading vehicles</div>
 
   return (
     <div className="p-6">
@@ -158,56 +192,109 @@ const handleCreate = (newVehicle: CreateVehicleData & { driverId?: number }) => 
         />
       )}
 
-      {vehicles && vehicles.length > 0 ? (
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Make</th>
-              <th>Model</th>
-              <th>Year</th>
-              <th>License Plate</th>
-              <th>Color</th>
-              <th>Capacity</th>
-              <th>Type</th>
-              <th>Approved</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {vehicles.map((vehicle) => (
-              <tr key={vehicle.vehicle_id}>
-                <td>{vehicle.vehicle_id}</td>
-                <td>{vehicle.make}</td>
-                <td>{vehicle.model}</td>
-                <td>{vehicle.year}</td>
-                <td>{vehicle.license_plate}</td>
-                <td>{vehicle.color}</td>
-                <td>{vehicle.capacity}</td>
-                <td>{vehicle.type}</td>
-                <td>{vehicle.approved ? 'Yes' : 'No'}</td>
-                <td className={styles.actions}>
+      {!showCreateForm && !editingVehicle && (
+        <>
+          {vehicles && vehicles.length > 0 ? (
+            <div>
+              <div className="bg-white rounded-lg shadow overflow-hidden">
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Make</th>
+                      <th>Model</th>
+                      <th>Year</th>
+                      <th>License Plate</th>
+                      <th>Color</th>
+                      <th>Capacity</th>
+                      <th>Type</th>
+                      <th>Approved</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {vehicles.map((vehicle: Vehicle) => (
+                      <tr key={vehicle.vehicle_id}>
+                        <td>{vehicle.vehicle_id}</td>
+                        <td>{vehicle.make}</td>
+                        <td>{vehicle.model}</td>
+                        <td>{vehicle.year}</td>
+                        <td>{vehicle.license_plate}</td>
+                        <td>{vehicle.color}</td>
+                        <td>{vehicle.capacity}</td>
+                        <td>{vehicle.type}</td>
+                        <td>{vehicle.approved ? 'Yes' : 'No'}</td>
+                        <td className={styles.actions}>
+                          <button
+                            className={`${styles.actionButton} ${styles.edit}`}
+                            onClick={() => handleEditClick(vehicle)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className={`${styles.actionButton} ${styles.delete}`}
+                            onClick={() => handleDelete(vehicle.vehicle_id)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              
+              {/* Enhanced Pagination Controls */}
+              <div className="flex justify-between items-center mt-4">
+                <div className="text-sm text-gray-600">
+                  Showing {((page - 1) * limit) + 1} to {Math.min(page * limit, totalVehicles)} of {totalVehicles} vehicles
+                </div>
+                <div className="flex space-x-2">
                   <button
-                    className={`${styles.actionButton} ${styles.edit}`}
-                    onClick={() => handleEditClick(vehicle)}
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page <= 1}
+                    className={`px-3 py-1 rounded ${page <= 1 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
                   >
-                    Edit
+                    Previous
                   </button>
+                  
+                  {/* Page Numbers */}
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    const pageNum = Math.max(1, page - 2) + i;
+                    if (pageNum > totalPages) return null;
+                    
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => handlePageChange(pageNum)}
+                        className={`px-3 py-1 rounded ${
+                          pageNum === page 
+                            ? 'bg-blue-500 text-white' 
+                            : 'bg-gray-200 hover:bg-gray-300'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                  
                   <button
-                    className={`${styles.actionButton} ${styles.delete}`}
-                    onClick={() => handleDelete(vehicle.vehicle_id!)}
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page >= totalPages}
+                    className={`px-3 py-1 rounded ${page >= totalPages ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
                   >
-                    Delete
+                    Next
                   </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <div>
-          <p>You have not added any vehicles yet. (Vehicles count: {vehicles ? vehicles.length : 0})</p>      
-        </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8 bg-white rounded-lg shadow">
+              <p className="text-gray-500">No vehicles found.</p>
+              <p className="text-sm text-gray-400 mt-1">Total vehicles: {totalVehicles}</p>
+            </div>
+          )}
+        </>
       )}
     </div>
   )
@@ -219,7 +306,7 @@ type CreateVehicleFormProps = {
 }
 
 function CreateVehicleForm({ onCreate, onCancel }: CreateVehicleFormProps) {
-  const { user } = useAuth();
+  const { user } = useAuth()
   const [formData, setFormData] = useState<CreateVehicleData>({
     make: '',
     model: '',
@@ -237,7 +324,7 @@ function CreateVehicleForm({ onCreate, onCancel }: CreateVehicleFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Submitting vehicle data:', formData); 
+    console.log('Submitting vehicle data:', formData)
     onCreate(formData)
   }
 
@@ -293,9 +380,9 @@ function CreateVehicleForm({ onCreate, onCancel }: CreateVehicleFormProps) {
       <label className={styles.label}>Capacity:</label>
       <input
         className={styles.input}
-        type="text"
+        type="number"
         value={formData.capacity}
-        onChange={(e) => handleChange('capacity', e.target.value)}
+        onChange={(e) => handleChange('capacity', parseInt(e.target.value))}
         required
       />
 
@@ -318,10 +405,11 @@ function CreateVehicleForm({ onCreate, onCancel }: CreateVehicleFormProps) {
           />
         </>
       )}
+
       <div className="pt-4 space-y-2">
         <button className={styles.button} type="submit">
           Add Vehicle
-        </button>{' '}
+        </button>
         <button className={styles.button} type="button" onClick={onCancel}>
           Cancel
         </button>
@@ -337,9 +425,8 @@ type EditVehicleFormProps = {
 }
 
 function EditVehicleForm({ vehicle, onCancel, onUpdate }: EditVehicleFormProps) {
-  const { user } = useAuth();
   const [formData, setFormData] = useState<UpdateVehicleData>({
-    vehicle_id: vehicle.vehicle_id || 0,
+    vehicle_id: vehicle.vehicle_id!,
     make: vehicle.make,
     model: vehicle.model,
     year: vehicle.year,
@@ -367,7 +454,7 @@ function EditVehicleForm({ vehicle, onCancel, onUpdate }: EditVehicleFormProps) 
       <input
         className={styles.input}
         type="text"
-        value={formData.make}
+        value={formData.make || ''}
         onChange={(e) => handleChange('make', e.target.value)}
         required
       />
@@ -376,7 +463,7 @@ function EditVehicleForm({ vehicle, onCancel, onUpdate }: EditVehicleFormProps) 
       <input
         className={styles.input}
         type="text"
-        value={formData.model}
+        value={formData.model || ''}
         onChange={(e) => handleChange('model', e.target.value)}
         required
       />
@@ -385,7 +472,7 @@ function EditVehicleForm({ vehicle, onCancel, onUpdate }: EditVehicleFormProps) 
       <input
         className={styles.input}
         type="number"
-        value={formData.year}
+        value={formData.year || 0}
         onChange={(e) => handleChange('year', parseInt(e.target.value))}
         required
       />
@@ -394,7 +481,7 @@ function EditVehicleForm({ vehicle, onCancel, onUpdate }: EditVehicleFormProps) 
       <input
         className={styles.input}
         type="text"
-        value={formData.license_plate}
+        value={formData.license_plate || ''}
         onChange={(e) => handleChange('license_plate', e.target.value)}
         required
       />
@@ -403,7 +490,7 @@ function EditVehicleForm({ vehicle, onCancel, onUpdate }: EditVehicleFormProps) 
       <input
         className={styles.input}
         type="text"
-        value={formData.color}
+        value={formData.color || ''}
         onChange={(e) => handleChange('color', e.target.value)}
         required
       />
@@ -411,9 +498,9 @@ function EditVehicleForm({ vehicle, onCancel, onUpdate }: EditVehicleFormProps) 
       <label className={styles.label}>Capacity:</label>
       <input
         className={styles.input}
-        type="text"
-        value={formData.capacity}
-        onChange={(e) => handleChange('capacity', e.target.value)}
+        type="number"
+        value={formData.capacity || 0}
+        onChange={(e) => handleChange('capacity', parseInt(e.target.value))}
         required
       />
 
@@ -421,26 +508,22 @@ function EditVehicleForm({ vehicle, onCancel, onUpdate }: EditVehicleFormProps) 
       <input
         className={styles.input}
         type="text"
-        value={formData.type}
+        value={formData.type || ''}
         onChange={(e) => handleChange('type', e.target.value)}
         required
       />
 
-      {user?.role === 'admin' && (
-        <>
-          <label className={styles.label}>Approved:</label>
-          <input
-            type="checkbox"
-            checked={formData.approved || false}
-            onChange={(e) => handleChange('approved', e.target.checked)}
-          />
-        </>
-      )}
+      <label className={styles.label}>Approved:</label>
+      <input
+        type="checkbox"
+        checked={formData.approved || false}
+        onChange={(e) => handleChange('approved', e.target.checked)}
+      />
 
       <div className="pt-4 space-y-2">
         <button className={styles.button} type="submit">
           Update Vehicle
-        </button>{' '}
+        </button>
         <button className={styles.button} type="button" onClick={onCancel}>
           Cancel
         </button>

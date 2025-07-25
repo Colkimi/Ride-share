@@ -11,6 +11,7 @@ export interface PaymentMethod {
   payment_type: methodPay;
   amount?: number;
   currency?: string;
+  userId: number;
   details?: string;
   approvalUrl?: string,
 }

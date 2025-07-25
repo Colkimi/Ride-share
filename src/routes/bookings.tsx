@@ -4,22 +4,19 @@ import BookingList from '@/components/BookingList'
 import { createFileRoute } from '@tanstack/react-router'
 import Layout from '@/components/Layout'
 
-const bookingsQueryOptions = queryOptions({
-  queryKey: ['bookings'],
-  queryFn: () => getBookings(),
+const bookingsQueryOptions = (page: number = 1, limit: number = 10) => queryOptions({
+  queryKey: ['bookings', page, limit],
+  queryFn: () => getBookings(page, limit),
 })
 
 export const Route = createFileRoute('/bookings')({
-  loader: ({ context }) => context.queryClient.ensureQueryData(bookingsQueryOptions),
   component: RouteComponent,
 })
 
 function RouteComponent() {
   return (
     <div>
-      <Layout>
-      <BookingList />
-      </Layout>
+        <BookingList />
     </div>
   )
 }

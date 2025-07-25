@@ -1,0 +1,151 @@
+/* Base animation variables */
+:root {
+  --transition-speed: 0.3s;
+  --transition-fast: 0.15s;
+  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+  --shadow-active: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Smooth card hover effects */
+.admin-card {
+  transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+  will-change: transform, box-shadow;
+}
+
+.admin-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+
+.admin-card:active {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-active);
+}
+
+/* Loading skeleton animations */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Enhanced skeleton for cards */
+.skeleton-card {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Entrance animations */
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered entrance animations */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* Button hover effects */
+.btn-hover {
+  transition: all var(--transition-fast) ease;
+  transform: translateY(0);
+}
+
+.btn-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-hover:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Chart animations */
+.chart-container {
+  transition: all var(--transition-speed) ease;
+}
+
+.chart-bar {
+  transition: all var(--transition-speed) ease;
+}
+
+.chart-bar:hover {
+  opacity: 0.8;
+}
+
+/* Responsive animations */
+@media (prefers-reduced-motion: reduce) {
+  .admin-card,
+  .btn-hover,
+  .fade-in-up,
+  .stagger-1,
+  .stagger-2,
+  .stagger-3,
+  .stagger-4,
+  .stagger-5 {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Mobile-optimized animations */
+@media (max-width: 768px) {
+  .admin-card:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Dark mode support */
+.dark .skeleton {
+  background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@media (prefers-color-scheme: dark) {
+  .skeleton {
+    background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+}
+
+/* Dark mode card animations */
+.dark .admin-card {
+  background-color: var(--card);
+  border-color: var(--border);
+}
+
+.dark .admin-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}

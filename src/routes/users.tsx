@@ -5,8 +5,8 @@ import Layout from '@/components/Layout'
 import UserList from '@/components/UserList'
 
 const usersQueryOptions = queryOptions({
-    queryKey: [ 'users'],
-    queryFn: () => getUsers(),
+    queryKey: ['users', 1, 10],
+    queryFn: () => getUsers(1, 10),
 }) 
 
 export const Route = createFileRoute('/users')({
@@ -17,10 +17,8 @@ export const Route = createFileRoute('/users')({
 function RouteComponent() {
 
   return (
-    <div>
-    <Layout>
+    <div className="w-full h-full flex-1">
      <UserList/>
-    </Layout>
     </div>
   )
 }

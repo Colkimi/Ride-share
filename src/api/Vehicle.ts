@@ -38,9 +38,9 @@ const handleApiResponse = async (response: Response) => {
   return response;
 };
 
-export const getVehicles = async (): Promise<Vehicle[]> => {
+export const getVehicles = async (page: number = 1, limit: number = 10): Promise<{ vehicles: Vehicle[], total: number }> => {
   const accessToken = localStorage.getItem('accessToken');
-  const response = await fetch(`${url}/vehicle`, {
+  const response = await fetch(`${url}/vehicle?page=${page}&limit=${limit}`, {
     headers: {
       'Authorization': `Bearer ${accessToken}`,
       'Content-Type': 'application/json',
@@ -50,9 +50,9 @@ export const getVehicles = async (): Promise<Vehicle[]> => {
   return response.json();
 };
 
-export const getVehiclesByDriverId = async (driverId: number): Promise<Vehicle[]> => {
+export const getVehiclesByDriverId = async (driverId: number, page: number = 1, limit: number = 10): Promise<{ vehicles: Vehicle[], total: number }> => {
   const accessToken = localStorage.getItem('accessToken');
-  const response = await fetch(`${url}/driver/${driverId}/vehicles`, {
+  const response = await fetch(`${url}/driver/${driverId}/vehicles?page=${page}&limit=${limit}`, {
     headers: {
       'Authorization': `Bearer ${accessToken}`,
       'Content-Type': 'application/json',

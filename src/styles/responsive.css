@@ -1,0 +1,226 @@
+/* Responsive Dashboard Styles */
+
+/* Mobile-first responsive grid system */
+.dashboard-container {
+  @apply min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800;
+}
+
+.dashboard-wrapper {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8;
+}
+
+/* Responsive grid layouts */
+.dashboard-grid {
+  @apply grid gap-4 sm:gap-6;
+}
+
+.dashboard-grid-cols-1 {
+  @apply grid-cols-1;
+}
+
+.dashboard-grid-cols-2 {
+  @apply grid-cols-1 sm:grid-cols-2;
+}
+
+.dashboard-grid-cols-3 {
+  @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.dashboard-grid-cols-4 {
+  @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-4;
+}
+
+/* Responsive cards */
+.dashboard-card {
+  @apply bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-xl shadow-sm;
+  @apply hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-out;
+}
+
+.dashboard-card-header {
+  @apply p-4 sm:p-6;
+}
+
+.dashboard-card-content {
+  @apply p-4 sm:p-6 pt-0;
+}
+
+/* Responsive typography */
+.dashboard-title {
+  @apply text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white;
+}
+
+.dashboard-subtitle {
+  @apply text-sm sm:text-base text-slate-500 dark:text-slate-400;
+}
+
+.dashboard-stat-value {
+  @apply text-xl sm:text-2xl lg:text-3xl font-bold;
+}
+
+.dashboard-stat-label {
+  @apply text-xs sm:text-sm text-muted-foreground;
+}
+
+/* Responsive tabs */
+.dashboard-tabs {
+  @apply w-full overflow-x-auto;
+}
+
+.dashboard-tabs-list {
+  @apply inline-flex min-w-max bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-lg p-1;
+}
+
+.dashboard-tabs-trigger {
+  @apply px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200;
+}
+
+/* Responsive charts */
+.dashboard-chart-container {
+  @apply w-full h-[250px] sm:h-[300px] lg:h-[400px];
+}
+
+/* Mobile-specific styles */
+@media (max-width: 640px) {
+  .dashboard-mobile-stack {
+    @apply flex-col space-y-4;
+  }
+  
+  .dashboard-mobile-hide {
+    @apply hidden;
+  }
+  
+  .dashboard-mobile-full {
+    @apply w-full;
+  }
+  
+  .dashboard-stat-card {
+    @apply p-3;
+  }
+  
+  .dashboard-stat-value {
+    @apply text-lg;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .dashboard-tablet-grid {
+    @apply grid-cols-2;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 1025px) {
+  .dashboard-desktop-grid {
+    @apply grid-cols-3;
+  }
+}
+
+/* Enhanced animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.dashboard-animate-in {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.dashboard-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Dark mode skeleton */
+.dark .dashboard-skeleton {
+  background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+}
+
+/* Touch-friendly buttons */
+.dashboard-touch-target {
+  @apply min-h-[44px] min-w-[44px];
+}
+
+/* Responsive spacing */
+.dashboard-section {
+  @apply mb-4 sm:mb-6 lg:mb-8;
+}
+
+.dashboard-gap {
+  @apply gap-4 sm:gap-6;
+}
+
+/* Scrollbar styling for mobile tabs */
+.dashboard-tabs::-webkit-scrollbar {
+  @apply h-1;
+}
+
+.dashboard-tabs::-webkit-scrollbar-track {
+  @apply bg-slate-100 dark:bg-slate-800 rounded-full;
+}
+
+.dashboard-tabs::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 dark:bg-slate-600 rounded-full;
+}
+
+/* Loading states */
+.dashboard-loading {
+  @apply animate-pulse;
+}
+
+/* Focus styles for accessibility */
+.dashboard-focus:focus {
+  @apply outline-none ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-slate-900;
+}
+
+/* Responsive badges */
+.dashboard-badge {
+  @apply px-2 py-1 text-xs sm:px-2.5 sm:py-1.5 sm:text-sm;
+}
+
+/* Chart responsive containers */
+.dashboard-chart-wrapper {
+  @apply relative w-full overflow-hidden;
+}
+
+/* Mobile chart adjustments */
+@media (max-width: 640px) {
+  .recharts-responsive-container {
+    @apply -mx-4;
+  }
+  
+  .recharts-legend-wrapper {
+    @apply text-xs;
+  }
+  
+  .recharts-tooltip-wrapper {
+    @apply text-xs;
+  }
+}
+
+/* Print styles */
+@media print {
+  .dashboard-container {
+    @apply bg-white text-black;
+  }
+  
+  .dashboard-card {
+    @apply shadow-none border border-gray-300;
+  }
+}

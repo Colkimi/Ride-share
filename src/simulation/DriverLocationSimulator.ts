@@ -15,10 +15,8 @@ const ROUTE_COORDINATES = [
   { lat: -1.2240, lng: 36.8661 }, // Langata
 ];
 
-// Reverse route for continuous loop
 const RETURN_ROUTE = [...ROUTE_COORDINATES].reverse();
 
-// Complete route (out and back)
 const COMPLETE_ROUTE = [...ROUTE_COORDINATES, ...RETURN_ROUTE];
 
 interface Coordinates {
@@ -85,11 +83,9 @@ export class DriverLocationSimulator {
     this.isRunning = true;
     this.currentIndex = 0;
 
-    // Initial update
     const initialCoords = COMPLETE_ROUTE[this.currentIndex];
     await this.updateLocation(initialCoords.lat, initialCoords.lng);
 
-    // Set up periodic updates
     this.intervalId = setInterval(async () => {
       this.currentIndex = (this.currentIndex + 1) % COMPLETE_ROUTE.length;
       const coords = COMPLETE_ROUTE[this.currentIndex];
