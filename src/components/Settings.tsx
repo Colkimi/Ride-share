@@ -19,13 +19,12 @@ import {
   Mail
 } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
-import { useTheme } from '@/hooks/useTheme';
+import { useTheme } from '@/components/ThemeProvider';
 
 export default function Settings() {
   const { user } = useAuth();
   const { theme, setTheme } = useTheme();
   
-  // Settings state (you might want to persist these)
   const [settings, setSettings] = useState({
     notifications: {
       email: true,

@@ -13,7 +13,11 @@ import {
   Shield,
   MapPin,
   FileText,
-  Bell
+  Bell,
+  Search,
+  Share2,
+  History,
+  UserPlus
 } from "lucide-react"
 
 import {
@@ -106,6 +110,16 @@ const customerItems: MenuItem[] = [
     title: "Create Ride",
     url: "/create",
     icon: MapPin,
+  },
+  {
+    title: "Find Rideshare",
+    url: "/share",
+    icon: Share2,
+  },
+  {
+    title: "Become a Driver",
+    url: "/driver-registration",
+    icon: UserPlus,
   },
 ]
 

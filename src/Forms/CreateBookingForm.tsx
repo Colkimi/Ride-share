@@ -10,9 +10,13 @@ import { LocationSearch } from '@/components/LocationSearch'
 import { getUserLocations, type Location as SavedLocation } from '@/api/Location'
 import MapWithRoute from '@/components/MapWithRoute'
 import { useNavigate } from '@tanstack/react-router'
-import { MapPin, Loader2, Home, Briefcase, Star } from 'lucide-react'
+import { MapPin, Loader2, Home, Briefcase, Star, Users, DollarSign, Clock, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
+import { Switch } from '@/components/ui/switch'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { searchAvailableRides, type SearchRidesRequest, type AvailableRide, createRideshareRequest, ShareType } from '@/api/Rideshare'
 
 type Location = {
   id: string
@@ -114,6 +118,12 @@ export function CreateBookingForm() {
   const [isCalculating, setIsCalculating] = useState(false)
   const [isGettingLocation, setIsGettingLocation] = useState(false)
   const [locationError, setLocationError] = useState<string | null>(null)
+
+  // Rideshare state
+  const [rideshareEnabled, setRideshareEnabled] = useState(false)
+  const [selectedRideshare, setSelectedRideshare] = useState<AvailableRide | null>(null)
+  const [showRideshareOptions, setShowRideshareOptions] = useState(false)
+
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
@@ -125,28 +135,7 @@ export function CreateBookingForm() {
     staleTime: 5 * 60 * 1000, // 5 minutes cache
   });
 
-  const bookingMutation = useMutation({
-    mutationFn: createBooking,
-    onSuccess: (data) => {
-      toast.success('Booking created successfully!')
-
-      queryClient.invalidateQueries({ queryKey: ['bookings'] })
-      queryClient.invalidateQueries({ queryKey: ['my-bookings'] })
-      queryClient.invalidateQueries({ queryKey: ['customerBookings'] })
-      queryClient.invalidateQueries({ queryKey: ['driverBookings'] })
-      queryClient.invalidateQueries({ queryKey: ['allBookings'] })
-      queryClient.invalidateQueries({ queryKey: ['bookings', 1, 10] })
-
-      setTimeout(() => {
-        queryClient.refetchQueries({ queryKey: ['my-bookings'] })
-        queryClient.refetchQueries({ queryKey: ['customerBookings'] })
-      }, 100)
-    },
-    onError: () => {
-      toast.error('Failed to create booking')
-    },
-  })
-
+  // Move form declaration above rideshareSearchParams
   const form = useForm({
     defaultValues: {
       pickup_location_id: undefined,
@@ -226,6 +215,63 @@ export function CreateBookingForm() {
         toast.error('Failed to create booking. Please try again.')
         console.error('Booking error:', error)
       }
+    },
+  })
+
+  // Rideshare search query
+  const rideshareSearchParams: SearchRidesRequest | null = 
+    rideshareEnabled && pickupLocation && dropoffLocation && form.state.values.pickup_time
+      ? {
+          pickupLat: pickupLocation.latitude,
+          pickupLng: pickupLocation.longitude,
+          dropoffLat: dropoffLocation.latitude,
+          dropoffLng: dropoffLocation.longitude,
+          pickupTime: form.state.values.pickup_time,
+          maxPickupDistance: 2,
+          maxRouteDeviation: 5,
+          timeWindow: 30
+        }
+      : null
+
+  const { data: availableRides = [], isLoading: ridesLoading, error: ridesError } = useQuery({
+    queryKey: ['availableRides', rideshareSearchParams],
+    queryFn: () => searchAvailableRides(rideshareSearchParams!),
+    enabled: rideshareEnabled && !!rideshareSearchParams,
+    staleTime: 30000,
+  })
+
+  const bookingMutation = useMutation({
+    mutationFn: createBooking,
+    onSuccess: (data) => {
+      toast.success('Booking created successfully!')
+
+      queryClient.invalidateQueries({ queryKey: ['bookings'] })
+      queryClient.invalidateQueries({ queryKey: ['my-bookings'] })
+      queryClient.invalidateQueries({ queryKey: ['customerBookings'] })
+      queryClient.invalidateQueries({ queryKey: ['driverBookings'] })
+      queryClient.invalidateQueries({ queryKey: ['allBookings'] })
+      queryClient.invalidateQueries({ queryKey: ['bookings', 1, 10] })
+
+      setTimeout(() => {
+        queryClient.refetchQueries({ queryKey: ['my-bookings'] })
+        queryClient.refetchQueries({ queryKey: ['customerBookings'] })
+      }, 100)
+    },
+    onError: () => {
+      toast.error('Failed to create booking')
+    },
+  })
+
+  // Rideshare request mutation
+  const rideshareRequestMutation = useMutation({
+    mutationFn: createRideshareRequest,
+    onSuccess: () => {
+      toast.success('Rideshare request sent successfully!')
+      queryClient.invalidateQueries({ queryKey: ['myRideshares'] })
+      navigate({ to: '/share' })
+    },
+    onError: () => {
+      toast.error('Failed to send rideshare request')
     },
   })
 
@@ -369,6 +415,53 @@ export function CreateBookingForm() {
     return <MapPin className="h-4 w-4 text-purple-600" />
   }
 
+  // Handle rideshare selection
+  const handleRideshareSelect = (ride: AvailableRide) => {
+    setSelectedRideshare(ride)
+    setShowRideshareOptions(false)
+    toast.success(`Selected ride with ${ride.primaryUser.firstName}`)
+  }
+
+  // Submit rideshare request
+  const handleRideshareSubmit = async () => {
+    if (!selectedRideshare || !user) {
+      toast.error('Please select a rideshare option')
+      return
+    }
+
+    try {
+      await rideshareRequestMutation.mutateAsync({
+        primaryBookingId: selectedRideshare.bookingId,
+        shareType: ShareType.Shared, // or the appropriate value for your app
+        sharer_pickup_latitude: pickupLocation?.latitude ?? 0,
+        sharer_pickup_longitude: pickupLocation?.longitude ?? 0,
+        sharer_dropoff_latitude: dropoffLocation?.latitude ?? 0,
+        sharer_dropoff_longitude: dropoffLocation?.longitude ?? 0,
+      })
+    } catch (error) {
+      toast.error('Failed to send rideshare request')
+      console.error('Rideshare request error:', error)
+    }
+  }
+
+  // Toggle rideshare mode
+  const handleRideshareToggle = (checked: boolean) => {
+    setRideshareEnabled(checked)
+    setSelectedRideshare(null)
+    setShowRideshareOptions(false)
+    
+    if (checked && pickupLocation && dropoffLocation && form.state.values.pickup_time) {
+      setShowRideshareOptions(true)
+    }
+  }
+
+  // Show rideshare options when locations/time are set
+  useEffect(() => {
+    if (rideshareEnabled && pickupLocation && dropoffLocation && form.state.values.pickup_time) {
+      setShowRideshareOptions(true)
+    }
+  }, [rideshareEnabled, pickupLocation, dropoffLocation, form.state.values.pickup_time])
+
   return (
     <div
       className="items-center justify-center min-h-screen bg-cover bg-center pt-20"
@@ -377,14 +470,20 @@ export function CreateBookingForm() {
       }}
     >
       <Toaster richColors position="top-center" closeButton={false} />
-      <div className="max-w-6xl mx-auto p-4 bg-white bg-opacity-90 rounded shadow-lg">
-        <h2 className="text-2xl font-bold text-green-700 mb-4">Book with us now</h2>
+      <div className="max-w-6xl mx-auto p-6 bg-white bg-opacity-95 backdrop-filter backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20">
+        <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+          Book Your Ride
+        </h2>
         <div className="flex flex-col md:flex-row gap-6">
           <form
             className="flex-1"
             onSubmit={(e) => {
               e.preventDefault()
-              form.handleSubmit(e)
+              if (selectedRideshare) {
+                handleRideshareSubmit()
+              } else {
+                form.handleSubmit(e)
+              }
             }}
           >
             {/* Pickup Location */}
@@ -620,6 +719,7 @@ export function CreateBookingForm() {
               </div>
             )}
 
+            {/* Pickup Time */}
             <Field
               form={form}
               name="pickup_time"
@@ -670,48 +770,363 @@ export function CreateBookingForm() {
               )}
             />
 
+            {/* Rideshare Toggle Section */}
+            <div className="mb-6">
+              <Card className={rideshareEnabled ? "border-green-200 bg-green-50" : "border-gray-200"}>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-medium flex items-center">
+                      <Users className="h-4 w-4 mr-2 text-green-600" />
+                      Find Rideshare Partners
+                    </CardTitle>
+                    <Switch
+                      checked={rideshareEnabled}
+                      onCheckedChange={handleRideshareToggle}
+                      disabled={!pickupLocation || !dropoffLocation || !form.state.values.pickup_time}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-600">
+                    Save money by sharing your ride with others going the same way
+                  </p>
+                </CardHeader>
+
+                {rideshareEnabled && (
+                  <CardContent className="pt-0">
+                    {!pickupLocation || !dropoffLocation || !form.state.values.pickup_time ? (
+                      <div className="text-center py-4">
+                        <p className="text-sm text-gray-600">
+                          Complete pickup, dropoff, and time to search for rideshares
+                        </p>
+                      </div>
+                    ) : ridesLoading ? (
+                      <div className="flex flex-col items-center justify-center py-8">
+                        <div className="relative">
+                          <div className="w-12 h-12 border-4 border-green-200 rounded-full"></div>
+                          <div className="absolute top-0 left-0 w-12 h-12 border-4 border-green-500 rounded-full animate-spin border-t-transparent"></div>
+                        </div>
+                        <div className="mt-4 text-center">
+                          <p className="text-sm font-medium text-gray-700 mb-1">
+                            Searching for shared rides...
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Finding the best matches for your route
+                          </p>
+                        </div>
+                      </div>
+                    ) : ridesError ? (
+                      <div className="text-center py-8">
+                        <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                          <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                          Unable to Search for Rideshares
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4">
+                          We couldn't find any shared rides at the moment. You can try again or create a regular booking.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              queryClient.invalidateQueries({ queryKey: ['availableRides'] })
+                            }}
+                            className="border-blue-300 text-blue-600 hover:bg-blue-50"
+                          >
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            Try Again
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setRideshareEnabled(false)}
+                            className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                          >
+                            Create Regular Booking
+                          </Button>
+                        </div>
+                      </div>
+                    ) : availableRides.length === 0 ? (
+                      <div className="text-center py-8 space-y-3">
+                        <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                          <Users className="h-8 w-8 text-blue-500" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                          No Shared Rides Available
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4">
+                          There are no matching rides for your route and time. You can create a regular booking or try different times.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              queryClient.invalidateQueries({ queryKey: ['availableRides'] })
+                            }}
+                            className="border-blue-300 text-blue-600 hover:bg-blue-50"
+                          >
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            Refresh Search
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setRideshareEnabled(false)}
+                            className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                          >
+                            Create Regular Booking
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-medium text-green-600">
+                            {availableRides.length} ride{availableRides.length !== 1 ? 's' : ''} available
+                          </p>
+                          {selectedRideshare && (
+                            <Badge variant="default" className="text-xs">
+                              Selected
+                            </Badge>
+                          )}
+                        </div>
+
+                        <div className="space-y-3 max-h-80 overflow-y-auto">
+                          {availableRides.map((ride, index) => (
+                            <div
+                              key={ride.bookingId}
+                              className={`group relative border-2 rounded-xl p-4 cursor-pointer transition-all duration-300 transform hover:scale-[1.02] ${
+                                selectedRideshare?.bookingId === ride.bookingId
+                                  ? 'border-green-500 bg-gradient-to-r from-green-50 to-emerald-50 shadow-md ring-2 ring-green-200'
+                                  : 'border-gray-200 hover:border-green-300 hover:bg-gradient-to-r hover:from-gray-50 hover:to-green-50 hover:shadow-sm'
+                              }`}
+                              onClick={() => handleRideshareSelect(ride)}
+                              style={{ animationDelay: `${index * 100}ms` }}
+                            >
+                              {/* Selection indicator */}
+                              {selectedRideshare?.bookingId === ride.bookingId && (
+                                <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+                                  <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                </div>
+                              )}
+
+                              {/* Header with user info and match percentage */}
+                              <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center space-x-3">
+                                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-md">
+                                    {ride.primaryUser.firstName.charAt(0)}{ride.primaryUser.lastName.charAt(0)}
+                                  </div>
+                                  <div>
+                                    <span className="text-sm font-semibold text-gray-900">
+                                      {ride.primaryUser.firstName} {ride.primaryUser.lastName}
+                                    </span>
+                                    <div className="flex items-center mt-1">
+                                      <div className="flex text-yellow-400">
+                                        {[...Array(5)].map((_, i) => (
+                                          <svg key={i} className="w-3 h-3 fill-current" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                          </svg>
+                                        ))}
+                                      </div>
+                                      <span className="text-xs text-gray-500 ml-1">4.8</span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <Badge 
+                                    variant="secondary" 
+                                    className="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border-blue-200 font-semibold px-3 py-1"
+                                  >
+                                    {ride.matchPercentage}% match
+                                  </Badge>
+                                </div>
+                              </div>
+
+                              {/* Pricing section */}
+                              <div className="bg-white rounded-lg p-3 mb-3 border border-gray-100 shadow-sm">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center space-x-2">
+                                    <DollarSign className="h-4 w-4 text-green-600" />
+                                    <span className="text-sm text-gray-500 line-through">${ride.originalFare}</span>
+                                    <ArrowRight className="h-3 w-3 text-gray-400" />
+                                    <span className="text-lg font-bold text-green-600">${ride.estimatedSharedFare}</span>
+                                  </div>
+                                  <div className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">
+                                    Save ${(ride.originalFare - ride.estimatedSharedFare).toFixed(2)}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Ride details */}
+                              <div className="grid grid-cols-2 gap-3 mb-3">
+                                <div className="flex items-center space-x-2 text-gray-600">
+                                  <Users className="h-4 w-4 text-blue-500" />
+                                  <span className="text-sm">{ride.availableSeats} seats left</span>
+                                </div>
+                                <div className="flex items-center space-x-2 text-gray-600">
+                                  <Clock className="h-4 w-4 text-purple-500" />
+                                  <span className="text-sm">
+                                    {new Date(ride.pickup_time).toLocaleTimeString('en-US', {
+                                      hour: '2-digit',
+                                      minute: '2-digit'
+                                    })}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Location details with improved styling */}
+                              <div className="space-y-2 text-xs">
+                                <div className="flex items-start space-x-2 p-2 bg-green-50 rounded-lg border-l-4 border-green-400">
+                                  <MapPin className="h-3 w-3 text-green-600 mt-0.5 flex-shrink-0" />
+                                  <div>
+                                    <span className="font-medium text-green-800">Pickup:</span>
+                                    <span className="text-green-700 ml-1">
+                                      {ride.startLocation.address || `${ride.startLocation.latitude.toFixed(4)}, ${ride.startLocation.longitude.toFixed(4)}`}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="flex items-start space-x-2 p-2 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                                  <MapPin className="h-3 w-3 text-blue-600 mt-0.5 flex-shrink-0" />
+                                  <div>
+                                    <span className="font-medium text-blue-800">Dropoff:</span>
+                                    <span className="text-blue-700 ml-1">
+                                      {ride.endLocation.address || `${ride.endLocation.latitude.toFixed(4)}, ${ride.endLocation.longitude.toFixed(4)}`}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Hover effect indicator */}
+                              <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                <div className="text-xs text-gray-400 flex items-center">
+                                  Click to select
+                                  <ArrowRight className="h-3 w-3 ml-1" />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="pt-4 border-t border-gray-200">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setRideshareEnabled(false)}
+                            className="w-full border-gray-300 text-gray-600 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+                          >
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Create Regular Booking Instead
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                )}
+              </Card>
+            </div>
+
+            {/* Submit Button */}
             <button
               type="submit"
-              disabled={bookingMutation.isPending}
-              className="mt-6 w-full bg-green-700 text-white font-bold py-2 rounded hover:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={bookingMutation.isPending || rideshareRequestMutation.isPending}
+              className="mt-6 w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold py-4 px-8 rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] flex items-center justify-center gap-3"
             >
-              {bookingMutation.isPending ? (
+              {rideshareRequestMutation.isPending ? (
+                <div className="flex items-center justify-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Sending Rideshare Request...
+                </div>
+              ) : bookingMutation.isPending ? (
                 <div className="flex items-center justify-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   Creating Booking...
+                </div>
+              ) : selectedRideshare ? (
+                <div className="flex items-center justify-center gap-2">
+                  <Users className="h-4 w-4" />
+                  Send Rideshare Request
                 </div>
               ) : (
                 'Book now'
               )}
             </button>
 
-            <p className="mt-4 text-center">
-              Want to rideshare?{' '}
-              <a href="/share" className="text-blue-600 underline">
-                share now
-              </a>
-            </p>
+            {selectedRideshare && (
+              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-green-800">
+                      Requesting to share with {selectedRideshare.primaryUser.firstName}
+                    </p>
+                    <p className="text-xs text-green-600">
+                      Save ${(selectedRideshare.originalFare - selectedRideshare.estimatedSharedFare).toFixed(2)}
+                    </p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-green-600" />
+                </div>
+              </div>
+            )}
+
+            <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-xl border border-blue-200/50">
+              <p className="text-center text-sm text-gray-700 font-medium">
+                {rideshareEnabled
+                  ? "🌍 Join existing rides and save money while helping the environment"
+                  : "💰 Save up to 50% by sharing your ride with others going the same way"
+                }
+              </p>
+            </div>
           </form>
 
           <div className="flex-1">
-            <button
-              className="mb-4 px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800"
+            <Button
+              type="button"
               onClick={() => setMapVisible(!mapVisible)}
+              className="mb-4 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
-              {mapVisible ? 'Hide Map' : 'Show Map'}
-            </button>
+              {mapVisible ? (
+                <>
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                  </svg>
+                  Hide Map
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                  </svg>
+                  Show Map
+                </>
+              )}
+            </Button>
             {mapVisible && (
-              <div className="h-[500px] w-full rounded shadow-lg overflow-hidden">
+              <div className="h-[500px] w-full rounded-2xl shadow-2xl overflow-hidden border-4 border-white/20 backdrop-blur-sm">
                 <MapWithRoute
                   pickupLocation={
                     pickupLocation
                       ? { latitude: pickupLocation.latitude, longitude: pickupLocation.longitude, name: pickupLocation.name }
-                      : undefined
+                      : null
                   }
                   dropoffLocation={
                     dropoffLocation
                       ? { latitude: dropoffLocation.latitude, longitude: dropoffLocation.longitude, name: dropoffLocation.name }
-                      : undefined
+                      : null
                   }
                 />
               </div>

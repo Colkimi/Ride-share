@@ -109,9 +109,9 @@ const getDefaultMessages = (): ChatMessage[] => [
   {
     id: 'welcome-message',
     sender: 'bot',
-    content: `# Welcome to Colkimi! 🚗✨
+    content: `# Welcome to RideEasy! 🚗✨
 
-Hello! I'm **Colkimi**, your virtual assistant. I'm here to help you with:
+Hello! I'm your virtual assistant. I'm here to help you with:
 
 • **Booking rides** - [Book a Ride](/create)
 • **Managing your account** - [Dashboard](/dashboard)  
@@ -305,11 +305,11 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
                 <div className="flex items-center">
                   <img 
                     src="/bot.png" 
-                    alt="Colkimi" 
+                    alt="RideEasy" 
                     className="w-8 h-8 rounded-full mr-3 border-2 border-white/30" 
                   />
                   <div>
-                    <h3 className="font-bold">Colkimi Assistant</h3>
+                    <h3 className="font-bold">RideEasy Assistant</h3>
                     <p className="text-xs opacity-80">
                       {chatMessages.length > 1 ? `${chatMessages.length - 1} messages` : 'Online • Ready to help'}
                     </p>

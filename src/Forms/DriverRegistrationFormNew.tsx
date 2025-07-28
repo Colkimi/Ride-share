@@ -2,20 +2,26 @@ import { useForm, Field } from '@tanstack/react-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Toaster, toast } from 'sonner';
 import { z } from 'zod';
-import { useState } from 'react';
-import { Status } from '@/api/Driver';
+import { useState, useEffect } from 'react';
+import { createDriver, Status } from '@/api/Driver';
+import { createVehicle } from '@/api/Vehicle';
 import { API_BASE_URL } from '@/api/apiUtils';
+import { getCurrentUser } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { 
   MapPin, 
   Car, 
   FileText, 
+  Camera, 
   CheckCircle, 
+  Upload,
   User,
   Shield,
   Clock,
   DollarSign,
+  Star,
   Truck
 } from 'lucide-react';
 
@@ -56,6 +62,11 @@ const validateField = <T,>(value: T, schema: z.ZodType<T>) => {
 
 export function DriverRegistrationForm() {
   const queryClient = useQueryClient();
+  const [uploadedFiles, setUploadedFiles] = useState<{
+    licenseDocument?: File;
+    insuranceDocument?: File;
+    vehiclePhotos: File[];
+  }>({ vehiclePhotos: [] });
   
   // State to track location fetching
   const [isGettingLocation, setIsGettingLocation] = useState(false);

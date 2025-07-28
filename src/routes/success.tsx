@@ -86,7 +86,7 @@ function RouteComponent() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Price:</span>
-                  <span className="font-medium text-green-600">{bookingDetails.price}</span>
+                  <span className="font-medium text-green-600">$ {bookingDetails.price}</span>
                 </div>
               </div>
             </div>

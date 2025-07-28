@@ -35,6 +35,409 @@ export function Hero() {
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-yellow-400/15 rounded-full blur-3xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-br from-purple-900/30 via-blue-900/30 to-indigo-900/30 rounded-full blur-3xl"></div>
+        
+        {/* Atmospheric Particles */}
+        <motion.div
+          animate={{
+            y: [0, -20, 0],
+            x: [0, 10, 0],
+            opacity: [0.1, 0.3, 0.1]
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1
+          }}
+          className="absolute top-1/4 left-1/4 w-1 h-1 bg-white/40 rounded-full blur-sm"
+        ></motion.div>
+        <motion.div
+          animate={{
+            y: [0, -15, 0],
+            x: [0, -8, 0],
+            opacity: [0.2, 0.4, 0.2]
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 3
+          }}
+          className="absolute top-1/3 right-1/4 w-0.5 h-0.5 bg-yellow-300/50 rounded-full blur-sm"
+        ></motion.div>
+        <motion.div
+          animate={{
+            y: [0, -25, 0],
+            x: [0, 5, 0],
+            opacity: [0.1, 0.25, 0.1]
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 5
+          }}
+          className="absolute top-2/3 left-1/3 w-0.5 h-0.5 bg-blue-300/40 rounded-full blur-sm"
+        ></motion.div>
+        
+        {/* Enhanced Animated Car */}
+        <motion.div
+          initial={{ x: "-120%", opacity: 0 }}
+          animate={{ 
+            x: ["120%", "-30%"],
+            opacity: [0, 1, 1, 0],
+            scale: [0.8, 1, 1, 0.8]
+          }}
+          transition={{ 
+            duration: 8,
+            repeat: Infinity,
+            repeatDelay: 2,
+            ease: "easeInOut",
+            times: [0, 0.15, 0.85, 1]
+          }}
+          className="absolute bottom-20 w-40 h-24 z-10"
+        >
+          <div className="relative car-engine">
+            {/* Car Image with enhanced styling */}
+            <div className="relative w-full h-full">
+              <img
+                src="/ride3.jpg"
+                alt="Animated Car"
+                className="w-full h-full object-cover rounded-xl shadow-2xl car-glow"
+                style={{
+                  clipPath: "polygon(15% 0%, 85% 0%, 95% 50%, 85% 100%, 15% 100%, 5% 50%)",
+                  filter: "brightness(1.3) contrast(1.2) saturate(1.1)"
+                }}
+              />
+              
+              {/* Enhanced Car Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-yellow-400/40 to-orange-500/30 rounded-xl blur-lg -z-10"></div>
+              
+              {/* Windshield Reflection */}
+              <div 
+                className="absolute top-1 left-4 right-4 h-3 bg-gradient-to-r from-transparent via-white/50 to-transparent rounded-sm"
+                style={{ clipPath: "polygon(20% 0%, 80% 0%, 70% 100%, 30% 100%)" }}
+              ></div>
+            </div>
+            
+            {/* Enhanced Dynamic Headlight Effect */}
+            <motion.div
+              animate={{
+                opacity: [0.6, 1, 0.6],
+                scaleX: [1, 1.4, 1],
+                scaleY: [1, 1.2, 1]
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute right-1 top-1/2 transform -translate-y-1/2 w-8 h-2"
+            >
+              <div className="w-full h-full bg-gradient-to-r from-transparent via-yellow-300/95 to-white/80 rounded-full"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-yellow-200/70 rounded-full blur-md"></div>
+            </motion.div>
+            
+            {/* Animated Wheels */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 0.3, repeat: Infinity, ease: "linear" }}
+              className="absolute bottom-2 left-4 w-4 h-4 bg-gray-800 rounded-full border-2 border-gray-600 shadow-lg"
+            >
+              <div className="w-2 h-2 bg-gray-300 rounded-full m-1"></div>
+              <div className="absolute inset-0 border border-gray-500 rounded-full"></div>
+            </motion.div>
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 0.3, repeat: Infinity, ease: "linear" }}
+              className="absolute bottom-2 right-4 w-4 h-4 bg-gray-800 rounded-full border-2 border-gray-600 shadow-lg"
+            >
+              <div className="w-2 h-2 bg-gray-300 rounded-full m-1"></div>
+              <div className="absolute inset-0 border border-gray-500 rounded-full"></div>
+            </motion.div>
+            
+            {/* Enhanced Exhaust Smoke */}
+            <motion.div
+              animate={{
+                opacity: [0.3, 0.7, 0.1],
+                scale: [1, 1.5, 2.5],
+                x: [-2, -12, -25],
+                y: [0, -3, -6]
+              }}
+              transition={{
+                duration: 1.8,
+                repeat: Infinity,
+                ease: "easeOut"
+              }}
+              className="absolute left-1 bottom-4 w-3 h-2"
+            >
+              <div className="w-full h-full bg-gray-400/40 rounded-full blur-sm"></div>
+              <div className="absolute inset-0 bg-gray-300/20 rounded-full blur-md"></div>
+            </motion.div>
+            
+            {/* Speed Lines Effect */}
+            <motion.div
+              animate={{
+                opacity: [0, 0.8, 0],
+                scaleX: [0.3, 1, 1.8],
+                x: [0, -5, -10]
+              }}
+              transition={{
+                duration: 0.6,
+                repeat: Infinity,
+                ease: "easeOut",
+                staggerChildren: 0.1
+              }}
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 w-12 h-0.5 -z-10"
+            >
+              <div className="w-full h-full bg-gradient-to-r from-white/70 via-yellow-300/50 to-transparent rounded-full"></div>
+            </motion.div>
+            
+            {/* Tail Light Effect */}
+            <motion.div
+              animate={{
+                opacity: [0.4, 0.8, 0.4]
+              }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 w-1 h-2 bg-red-500/60 rounded-full blur-sm"
+            ></motion.div>
+          </div>
+        </motion.div>
+
+        {/* Enhanced Floating Car Alternative */}
+        <motion.div
+          animate={{
+            y: [0, -20, 0],
+            rotate: [0, 3, 0, -3, 0],
+            x: [0, 12, 0, -12, 0]
+          }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute top-1/4 right-16 w-24 h-16 opacity-50 hidden lg:block floating-car"
+        >
+          <div className="relative">
+            <img
+              src="/ride5.jpg"
+              alt="Floating Car"
+              className="w-full h-full object-cover rounded-xl shadow-2xl"
+              style={{
+                clipPath: "polygon(10% 0%, 90% 0%, 95% 50%, 90% 100%, 10% 100%, 5% 50%)",
+                filter: "brightness(1.4) blur(0.5px) saturate(1.3)"
+              }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-400/30 to-blue-500/30 rounded-xl blur-md"></div>
+            
+            {/* Floating Car Glow */}
+            <motion.div
+              animate={{
+                opacity: [0.3, 0.7, 0.3],
+                scale: [1, 1.1, 1]
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-500/20 rounded-xl blur-lg -z-10"
+            ></motion.div>
+          </div>
+        </motion.div>
+
+        {/* Enhanced Road Effect with 3D Perspective */}
+        <motion.div
+          animate={{
+            backgroundPosition: ["0% 0%", "200% 0%"]
+          }}
+          transition={{
+            duration: 1.0,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute bottom-16 left-0 w-full h-3 opacity-70 road-perspective"
+          style={{
+            background: "repeating-linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.9) 2%, transparent 6%, rgba(255,255,255,0.7) 8%, transparent 12%)",
+            backgroundSize: "60px 100%",
+            transform: "perspective(400px) rotateX(50deg)",
+            borderRadius: "2px",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.3)"
+          }}
+        ></motion.div>
+
+        {/* Secondary Road Lane */}
+        <motion.div
+          animate={{
+            backgroundPosition: ["0% 0%", "150% 0%"]
+          }}
+          transition={{
+            duration: 1.8,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute bottom-12 left-0 w-full h-1 opacity-25"
+          style={{
+            background: "repeating-linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 2%, transparent 6%)",
+            backgroundSize: "30px 100%",
+            transform: "perspective(150px) rotateX(50deg)",
+            borderRadius: "0.5px"
+          }}
+        ></motion.div>
+
+        {/* Road Surface Texture */}
+        <div 
+          className="absolute bottom-8 left-0 w-full h-8 opacity-15"
+          style={{
+            background: "linear-gradient(180deg, transparent 0%, rgba(100,100,100,0.3) 50%, rgba(50,50,50,0.5) 100%)",
+            transform: "perspective(300px) rotateX(75deg)",
+            borderRadius: "2px"
+          }}
+        ></div>
+
+        {/* Traffic Light with Enhanced Animation */}
+        <motion.div
+          animate={{
+            backgroundColor: [
+              "#ef4444", "#ef4444", "#ef4444",
+              "#eab308", "#eab308", 
+              "#22c55e", "#22c55e", "#22c55e"
+            ]
+          }}
+          transition={{
+            duration: 9,
+            repeat: Infinity,
+            times: [0, 0.25, 0.3, 0.35, 0.6, 0.65, 0.9, 1]
+          }}
+          className="absolute top-1/3 right-12 w-4 h-4 rounded-full shadow-2xl opacity-70 hidden md:block border-2 border-white/30"
+        >
+          <motion.div
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.5, 1, 0.5]
+            }}
+            transition={{
+              duration: 1,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="absolute inset-0 rounded-full blur-sm"
+            style={{ backgroundColor: "inherit" }}
+          ></motion.div>
+        </motion.div>
+
+        {/* Additional Background Cars for Traffic Simulation */}
+        <motion.div
+          animate={{
+            x: ["-50%", "150%"]
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "linear",
+            delay: 3
+          }}
+          className="absolute bottom-24 w-16 h-10 opacity-40 hidden xl:block"
+        >
+          <img
+            src="/ride1.jpg"
+            alt="Background Traffic"
+            className="w-full h-full object-cover rounded-lg shadow-lg"
+            style={{
+              clipPath: "polygon(20% 0%, 80% 0%, 90% 100%, 10% 100%)",
+              filter: "brightness(0.9) blur(0.5px) saturate(1.1)"
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-400/10 to-purple-400/10 rounded-lg"></div>
+        </motion.div>
+
+        {/* Second Background Car */}
+        <motion.div
+          animate={{
+            x: ["150%", "-50%"]
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "linear",
+            delay: 8
+          }}
+          className="absolute bottom-28 w-14 h-9 opacity-35 hidden lg:block"
+        >
+          <img
+            src="/ride2.jpg"
+            alt="Background Traffic 2"
+            className="w-full h-full object-cover rounded-md"
+            style={{
+              clipPath: "polygon(15% 0%, 85% 0%, 95% 100%, 5% 100%)",
+              filter: "brightness(0.6) blur(0.8px) sepia(0.2)"
+            }}
+          />
+        </motion.div>
+
+        {/* Distant Cars on Horizon */}
+        <motion.div
+          animate={{
+            opacity: [0.1, 0.3, 0.1],
+            x: ["-20%", "120%"]
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "linear",
+            delay: 12
+          }}
+          className="absolute bottom-32 w-6 h-4 opacity-10 hidden 2xl:block"
+        >
+          <div className="w-full h-full bg-gradient-to-r from-gray-400 to-gray-600 rounded-sm blur-sm"></div>
+        </motion.div>
+
+        {/* City Lights in Distance */}
+        <div className="absolute top-1/2 left-0 w-full h-px opacity-20">
+          <motion.div
+            animate={{
+              opacity: [0.2, 0.6, 0.2],
+              scaleX: [0.8, 1.2, 0.8]
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+            className="w-2 h-2 bg-yellow-400/50 rounded-full absolute left-1/4"
+          ></motion.div>
+          <motion.div
+            animate={{
+              opacity: [0.3, 0.8, 0.3],
+              scaleX: [1, 1.3, 1]
+            }}
+            transition={{
+              duration: 3.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 2.5
+            }}
+            className="w-1.5 h-1.5 bg-blue-400/40 rounded-full absolute left-1/3"
+          ></motion.div>
+          <motion.div
+            animate={{
+              opacity: [0.1, 0.5, 0.1],
+              scaleX: [0.9, 1.1, 0.9]
+            }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.5
+            }}
+            className="w-1 h-1 bg-orange-400/30 rounded-full absolute right-1/3"
+          ></motion.div>
+        </div>
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto text-white">
@@ -539,7 +942,7 @@ export function LandingPage() {
   type ChatMessage = { sender: string; content: string };
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     { sender: "bot",
-      content: "Hello, I'm Colkimi, your virtual assistant. How can I help you today? 🚗✨" }
+      content: "Hello, I'm your virtual assistant. How can I help you today? 🚗✨" }
   ]);
   const { user } = useAuth();
   const [inputMessage, setInputMessage] = useState("");
@@ -633,9 +1036,9 @@ export function LandingPage() {
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
-                <img src="/bot.png" alt="Colkimi" className="w-8 h-8 rounded-full mr-3 border-2 border-white/30" />
+                <img src="/bot.png" alt="RideEasy" className="w-8 h-8 rounded-full mr-3 border-2 border-white/30" />
                 <div>
-                  <h3 className="font-bold">Colkimi Assistant</h3>
+                  <h3 className="font-bold">RideEasy Assistant</h3>
                   <p className="text-xs opacity-80">Online • Ready to help</p>
                 </div>
               </div>
@@ -731,7 +1134,7 @@ export function LandingPage() {
                   <img src="/bot.png" alt="Bot" className="w-10 h-10 rounded-full border-2 border-white/30" />
                   <div>
                     <p className="font-semibold">Hey there! 👋</p>
-                    <p className="text-sm opacity-90">I'm Colkimi, ready to assist you!</p>
+                    <p className="text-sm opacity-90">I'm RideEasy virtual assistant , ready to assist you!</p>
                   </div>
                 </div>
               </motion.div>

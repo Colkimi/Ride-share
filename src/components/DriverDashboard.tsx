@@ -92,7 +92,7 @@ const DriverDashboard: React.FC = () => {
     enabled: !!user?.userId,
   });
 
-  const driverId = driverData?.driver_id || 3500;
+  const driverId = driverData?.driver_id || 4029;
   const liveLocation = useDriverLocation(driverId);
 
   const { data: vehicles } = useQuery({
@@ -640,7 +640,7 @@ const rejectMutation = useMutation({
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
-                    {Math.max(...(bookings?.filter((b: Booking) => b.status === 'completed').map((b: Booking): number => b.fare || 0) || [0])).toFixed(2)}
+                    ${Math.max(...(bookings?.filter((b: Booking) => b.status === 'completed').map((b: Booking): number => b.fare || 0) || [0])).toFixed(2)}
                   </div>
                 </CardContent>
               </Card>

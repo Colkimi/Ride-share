@@ -15,6 +15,7 @@ import { Route as ThemeRouteImport } from './routes/theme'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as SuccessRouteImport } from './routes/success'
 import { Route as SignUpRouteImport } from './routes/sign-up'
+import { Route as ShareRouteImport } from './routes/share'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReviewRouteImport } from './routes/review'
 import { Route as NotificationsRouteImport } from './routes/notifications'
@@ -64,6 +65,11 @@ const SuccessRoute = SuccessRouteImport.update({
 const SignUpRoute = SignUpRouteImport.update({
   id: '/sign-up',
   path: '/sign-up',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShareRoute = ShareRouteImport.update({
+  id: '/share',
+  path: '/share',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -184,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRoute
   '/review': typeof ReviewRoute
   '/settings': typeof SettingsRoute
+  '/share': typeof ShareRoute
   '/sign-up': typeof SignUpRoute
   '/success': typeof SuccessRoute
   '/support': typeof SupportRoute
@@ -211,6 +218,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/review': typeof ReviewRoute
   '/settings': typeof SettingsRoute
+  '/share': typeof ShareRoute
   '/sign-up': typeof SignUpRoute
   '/success': typeof SuccessRoute
   '/support': typeof SupportRoute
@@ -240,6 +248,7 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/review': typeof ReviewRoute
   '/settings': typeof SettingsRoute
+  '/share': typeof ShareRoute
   '/sign-up': typeof SignUpRoute
   '/success': typeof SuccessRoute
   '/support': typeof SupportRoute
@@ -269,6 +278,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/review'
     | '/settings'
+    | '/share'
     | '/sign-up'
     | '/success'
     | '/support'
@@ -296,6 +306,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/review'
     | '/settings'
+    | '/share'
     | '/sign-up'
     | '/success'
     | '/support'
@@ -324,6 +335,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/review'
     | '/settings'
+    | '/share'
     | '/sign-up'
     | '/success'
     | '/support'
@@ -353,6 +365,7 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   ReviewRoute: typeof ReviewRoute
   SettingsRoute: typeof SettingsRoute
+  ShareRoute: typeof ShareRoute
   SignUpRoute: typeof SignUpRoute
   SuccessRoute: typeof SuccessRoute
   SupportRoute: typeof SupportRoute
@@ -404,6 +417,13 @@ declare module '@tanstack/react-router' {
       path: '/sign-up'
       fullPath: '/sign-up'
       preLoaderRoute: typeof SignUpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/share': {
+      id: '/share'
+      path: '/share'
+      fullPath: '/share'
+      preLoaderRoute: typeof ShareRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -578,6 +598,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   ReviewRoute: ReviewRoute,
   SettingsRoute: SettingsRoute,
+  ShareRoute: ShareRoute,
   SignUpRoute: SignUpRoute,
   SuccessRoute: SuccessRoute,
   SupportRoute: SupportRoute,
