@@ -70,6 +70,7 @@ export default function Header() {
 
   return (
     <>
+    <Toaster />
       <header
         className="p-2 border-b"
         style={{

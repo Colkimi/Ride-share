@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useRef, useEffect } from 'react';
+import React, { createContext, useContext, useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -107,7 +107,7 @@ const loadChatState = () => {
 
 const getDefaultMessages = (): ChatMessage[] => [
   {
-    id: 'welcome-message',
+    id: `welcome-${Date.now()}`,
     sender: 'bot',
     content: `# Welcome to RideEasy! 🚗✨
 
@@ -140,7 +140,6 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const chatEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  // Initialize chat state and history when component mounts or user changes
   useEffect(() => {
     if (user?.userId) {
       // Load chat history for the current user
@@ -162,14 +161,15 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user?.userId]);
 
-  // Save chat history whenever messages change (but only after initialization)
   useEffect(() => {
     if (isInitialized && user?.userId && chatMessages.length > 0) {
-      saveChatToStorage(chatMessages, user.userId);
+      const timeoutId = setTimeout(() => {
+        saveChatToStorage(chatMessages, user.userId);
+      }, 500);
+      return () => clearTimeout(timeoutId); 
     }
   }, [chatMessages, user?.userId, isInitialized]);
 
-  // Save chat state whenever it changes
   useEffect(() => {
     if (isInitialized) {
       saveChatState(isChatOpen, isMinimized);
@@ -196,21 +196,32 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     setUnreadCount(0);
   };
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  }, []);
 
-  useEffect(() => {
+    useEffect(() => {
     scrollToBottom();
-  }, [chatMessages]);
+  }, [chatMessages.length, scrollToBottom]);
 
-  useEffect(() => {
-    if (isChatOpen && inputRef.current) {
-      inputRef.current.focus();
-    }
+  const memoizedChatMessages = useMemo(() => {
+    return chatMessages.map((msg, index) => ({
+      ...msg,
+      index,
+    }));
+  }, [chatMessages.length, chatMessages.map(msg => msg.id).join('')]); 
+
+useEffect(() => {
+    if (isChatOpen && chatEndRef.current) {
+    inputRef.current?.focus();
+      }
   }, [isChatOpen, isMinimized]);
 
-  const handleSendMessage = async () => {
+  const handleInputChange = useCallback(( e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputMessage(e.target.value);
+  }, []);
+
+  const handleSendMessage = useCallback(async () => {
     if (inputMessage.trim() === '') return;
 
     if (!user?.userId) {
@@ -218,7 +229,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const messageId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const messageId = `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const userMessage: ChatMessage = {
       id: messageId,
       sender: 'user',
@@ -233,7 +244,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     try {
       const contextMessages = chatMessages
         .filter(msg => msg.content.trim() !== '')
-        .slice(-10) // Only send last 10 messages for context to avoid token limits
+        .slice(-10) 
         .map(msg => ({
           role: msg.sender === 'user' ? 'user' : 'assistant',
           content: msg.content,
@@ -242,7 +253,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
       const response = await callChatbotAPI(user.userId, inputMessage, contextMessages);
       
-      const botMessageId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const botMessageId = `bot-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const botMessage: ChatMessage = {
         id: botMessageId,
         sender: 'bot',
@@ -252,13 +263,12 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
       setChatMessages(prev => [...prev, botMessage]);
       
-      // Add unread count if chat is minimized or closed
       if (isMinimized || !isChatOpen) {
         setUnreadCount(prev => prev + 1);
       }
     } catch (error) {
       console.error('Chat error:', error);
-      const errorMessageId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const errorMessageId = `error-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const errorMessage: ChatMessage = {
         id: errorMessageId,
         sender: 'bot',
@@ -269,16 +279,15 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [inputMessage, chatMessages, user?.userId, isMinimized, isChatOpen]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
-  };
+  }, [inputMessage]);
 
-  // Don't render until initialized to prevent flashing
   if (!isInitialized) {
     return <>{children}</>;
   }
@@ -345,52 +354,16 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
               <>
                 {/* Chat Messages */}
                 <div className="h-80 overflow-y-auto p-4 bg-gray-50 dark:bg-slate-900">
-                  {chatMessages.map((msg, idx) => (
-                    <motion.div
+                  {memoizedChatMessages.map((msg, idx) => (
+                    <MessageComponent
                       key={msg.id || idx}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className={`mb-4 flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                    >
-                      {msg.sender === 'bot' && (
-                        <img 
-                          src="/bot.png" 
-                          alt="Bot" 
-                          className="w-8 h-8 rounded-full mr-2 self-start mt-1 flex-shrink-0" 
-                        />
-                      )}
-                      <div 
-                        className={`rounded-2xl px-4 py-3 max-w-xs shadow-sm ${
-                          msg.sender === 'user' 
-                            ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white' 
-                            : 'bg-white dark:bg-slate-700 text-gray-800 dark:text-gray-200 border dark:border-slate-600'
-                        }`}
-                      >
-                        <FormattedMessage 
-                          content={msg.content} 
-                          sender={msg.sender}
-                          className="text-sm"
-                        />
-                        <div className={`text-xs mt-2 ${
-                          msg.sender === 'user' ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'
-                        }`}>
-                          {msg.timestamp.toLocaleTimeString()}
-                        </div>
-                      </div>
-                    </motion.div>
+                      message={msg}
+                      index={idx}
+                    />
                   ))}
                   
                   {isLoading && (
-                    <div className="flex justify-start mb-4">
-                      <img src="/bot.png" alt="Bot" className="w-8 h-8 rounded-full mr-2 flex-shrink-0" />
-                      <div className="bg-white dark:bg-slate-700 rounded-2xl px-4 py-2 border dark:border-slate-600">
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100"></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200"></div>
-                        </div>
-                      </div>
-                    </div>
+                    <LoadingIndicator />
                   )}
                   
                   <div ref={chatEndRef} />
@@ -403,7 +376,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
                       <Textarea
                         ref={inputRef}
                         value={inputMessage}
-                        onChange={(e) => setInputMessage(e.target.value)}
+                        onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
                         placeholder="Type your message..."
                         rows={2}
@@ -462,3 +435,49 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     </ChatContext.Provider>
   );
 }
+const MessageComponent = React.memo(({ message, index }: { message: ChatMessage & { index?: number }, index: number }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    className={`mb-4 flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+  >
+    {message.sender === 'bot' && (
+      <img 
+        src="/bot.png" 
+        alt="Bot" 
+        className="w-8 h-8 rounded-full mr-2 self-start mt-1 flex-shrink-0" 
+      />
+    )}
+    <div 
+      className={`rounded-2xl px-4 py-3 max-w-xs shadow-sm ${
+        message.sender === 'user' 
+          ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white' 
+          : 'bg-white dark:bg-slate-700 text-gray-800 dark:text-gray-200 border dark:border-slate-600'
+      }`}
+    >
+      <FormattedMessage 
+        content={message.content} 
+        sender={message.sender}
+        className="text-sm"
+      />
+            <div className={`text-xs mt-2 ${
+        message.sender === 'user' ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'
+      }`}>
+        {message.timestamp.toLocaleTimeString()}
+      </div>
+    </div>
+  </motion.div>
+));
+
+const LoadingIndicator = React.memo(() => (
+  <div className="flex justify-start mb-4">
+    <img src="/bot.png" alt="Bot" className="w-8 h-8 rounded-full mr-2 flex-shrink-0" />
+    <div className="bg-white dark:bg-slate-700 rounded-2xl px-4 py-2 border dark:border-slate-600">
+      <div className="flex space-x-1">
+        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100"></div>
+        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200"></div>
+      </div>
+    </div>
+  </div>
+));

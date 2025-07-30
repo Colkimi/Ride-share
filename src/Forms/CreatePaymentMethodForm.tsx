@@ -56,10 +56,13 @@ export function CreatePaymentMethodForm({ onSuccess }: CreatePaymentMethodFormPr
     },
   })
 
+  // Get fare from localStorage
+  const fareAmount = Number(localStorage.getItem('fare')) || 0
+
   const form = useForm({
     defaultValues: {
-      payment_type: '',
-      amount: undefined,
+      payment_type: 'paypal', // Default to PayPal
+      amount: fareAmount, // Default to fare amount
       currency: 'USD',
       is_default: true,
       userId: Number(localStorage.getItem('userId')) || 0,
@@ -111,7 +114,7 @@ export function CreatePaymentMethodForm({ onSuccess }: CreatePaymentMethodFormPr
             form.handleSubmit()
           }}
         >
-          {/* Payment Type Selection */}
+          {/* Payment Type Selection - Hidden since it's PayPal only */}
           <Field
             form={form}
             name="payment_type"
@@ -128,34 +131,16 @@ export function CreatePaymentMethodForm({ onSuccess }: CreatePaymentMethodFormPr
                   <select
                     id="payment_type"
                     name={field.name}
-                    className="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white transition-all duration-200 appearance-none bg-white"
+                    className="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm bg-gray-100 dark:bg-slate-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                     value={field.state.value as string}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    onBlur={field.handleBlur}
+                    disabled // Make it read-only since it's PayPal only
                   >
-                    <option value="">Choose payment method</option>
                     <option value="paypal">PayPal</option>
-                    <option value="mpesa">M-Pesa</option>
-                    <option value="visa">Visa Card</option>
-                    <option value="master_card">Mastercard</option>
                   </select>
                   <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
                     {getPaymentIcon(field.state.value as string)}
                   </div>
-                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
                 </div>
-                {field.state.meta.errors?.[0] && (
-                  <div className="text-red-500 text-sm flex items-center mt-1">
-                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    {field.state.meta.errors[0]}
-                  </div>
-                )}
               </div>
             )}
           />
@@ -166,28 +151,49 @@ export function CreatePaymentMethodForm({ onSuccess }: CreatePaymentMethodFormPr
               form={form}
               name="amount"
               validators={{
-                onChange: ({ value }) => (value !== undefined ? undefined : undefined),
-                onBlur: ({ value }) => (value !== undefined ? undefined : undefined),
+                onChange: ({ value }) => {
+                  if (value !== undefined && value < fareAmount) {
+                    return `Amount cannot be less than the fare amount ($${fareAmount.toFixed(2)})`
+                  }
+                  return undefined
+                },
+                onBlur: ({ value }) => {
+                  if (value !== undefined && value < fareAmount) {
+                    return `Amount cannot be less than the fare amount ($${fareAmount.toFixed(2)})`
+                  }
+                  return undefined
+                },
               }}
               children={(field) => (
                 <div className="space-y-2">
                   <label htmlFor={field.name} className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
-                    Amount (Optional)
+                    Amount
                   </label>
                   <div className="relative">
                     <input
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white transition-all duration-200"
                       type="number"
                       name={field.name}
-                      value={field.state.value as number | undefined || ''}
-                      onChange={(e) => field.handleChange(e.target.value ? Number(e.target.value) : undefined)}
+                      value={field.state.value as number || ''}
+                      onChange={(e) => field.handleChange(e.target.value ? Number(e.target.value) : fareAmount)}
                       onBlur={field.handleBlur}
-                      placeholder="0.00"
+                      placeholder={fareAmount.toFixed(2)}
                       step="0.01"
-                      min="0"
+                      min={fareAmount} // Set minimum to fare amount
                     />
                     <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                   </div>
+                  {field.state.meta.errors?.[0] && (
+                    <div className="text-red-500 text-sm flex items-center mt-1">
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      {field.state.meta.errors[0]}
+                    </div>
+                  )}
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Minimum fare amount: ${fareAmount.toFixed(2)}
+                  </p>
                 </div>
               )}
             />
@@ -196,8 +202,8 @@ export function CreatePaymentMethodForm({ onSuccess }: CreatePaymentMethodFormPr
               form={form}
               name="currency"
               validators={{
-                onChange: ({ value }) => undefined,
-                onBlur: ({ value }) => undefined,
+                onChange: () => undefined,
+                onBlur: () => undefined,
               }}
               children={(field) => (
                 <div className="space-y-2">
@@ -234,8 +240,8 @@ export function CreatePaymentMethodForm({ onSuccess }: CreatePaymentMethodFormPr
             form={form}
             name="is_default"
             validators={{
-              onChange: ({ value }) => undefined,
-              onBlur: ({ value }) => undefined,
+              onChange: () => undefined,
+              onBlur: () => undefined,
             }}
             children={(field) => (
               <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-700/50 rounded-xl border border-gray-200 dark:border-slate-600">

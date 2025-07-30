@@ -1,5 +1,4 @@
 import { API_BASE_URL } from './apiUtils';
-import { type Booking } from './Bookings';
 
 export interface ConfirmPickupRequest {
   bookingId: number;

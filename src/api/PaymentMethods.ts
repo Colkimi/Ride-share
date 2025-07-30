@@ -1,4 +1,4 @@
-import { API_BASE_URL, authenticatedFetch, handleApiResponse } from './apiUtils';
+import { API_BASE_URL, authenticatedFetch} from './apiUtils';
 
 export enum methodPay {
   PAYPAL = 'paypal',

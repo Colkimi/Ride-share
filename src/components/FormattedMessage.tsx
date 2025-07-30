@@ -14,7 +14,13 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
   className = '' 
 }) => {
   const navigate = useNavigate();
-  
+  const formatMessage = (text: string) => {
+    return text.split('\n').map((line, index) => (
+<div key={index} className="chat-message-line">
+  {line}
+</div>
+    ));
+  };
   const formattedContent = sender === 'bot' 
     ? MessageFormatter.formatBotMessage(content)
     : MessageFormatter.formatUserMessage(content);
@@ -49,9 +55,8 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
   }, [navigate]);
 
   return (
-    <div 
-      className={`chat-message-content chat-formatted-content ${sender === 'bot' ? 'bot-message' : 'user-message'} ${className}`}
-      dangerouslySetInnerHTML={{ __html: formattedContent }}
-    />
+    <div className={`chat-message-content chat-formatted-content ${sender === 'bot' ? 'bot-message' : 'user-message'} ${className}`}
+      dangerouslySetInnerHTML={{ __html: formattedContent }} 
+ />
   );
 };

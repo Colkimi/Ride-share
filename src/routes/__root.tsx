@@ -16,7 +16,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <>
-        <Header />
         <Layout>
           <ChatProvider>
             <Outlet />

@@ -7,9 +7,8 @@ import { ModernCard, ModernCardHeader, ModernCardTitle, ModernCardContent } from
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Edit3, Save, X, User as UserIcon, Mail, Phone, Shield } from 'lucide-react';
-import styles from '../FormStyles.module.css';
 
 interface UpdateUserData {
   userId: number;
