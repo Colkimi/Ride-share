@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useDriverLocation } from '@/hooks/useDriverLocation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -24,13 +24,7 @@ import {
   TrendingUp,
   Calendar,
   MapPin,
-  Navigation,
-  CheckCircle,
-  XCircle,
   Map,
-  Users,
-  Briefcase,
-  Plus,
   Edit3,
   Trash2
 } from 'lucide-react';

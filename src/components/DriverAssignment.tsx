@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin, Star, Clock, Loader2, Users } from 'lucide-react';
 import { toast } from 'sonner';
-import { type Booking, getNearbyDrivers, assignSpecificDriver, autoAssignDriver, type NearbyDriver } from '@/api/Bookings';
+import { type Booking, getNearbyDrivers, assignSpecificDriver, autoAssignDriver } from '@/api/Bookings';
 
 interface DriverAssignmentModalProps {
   booking: Booking;

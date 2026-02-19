@@ -1,4 +1,3 @@
-import Layout from '@/components/Layout'
 import Reviews from '@/components/Reviews'
 import { createFileRoute } from '@tanstack/react-router'
 

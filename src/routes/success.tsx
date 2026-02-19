@@ -16,7 +16,6 @@ function RouteComponent() {
     const rideType = urlParams.get('rideType') || 'Ride'
     const startTime = urlParams.get('startTime')
     const endTime = urlParams.get('endTime')
-    const price = urlParams.get('price')
     const pickup = urlParams.get('pickup') || 'Pickup location'
     const destination = urlParams.get('destination') || 'Destination'
 

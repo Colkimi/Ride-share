@@ -435,7 +435,7 @@ useEffect(() => {
     </ChatContext.Provider>
   );
 }
-const MessageComponent = React.memo(({ message, index }: { message: ChatMessage & { index?: number }, index: number }) => (
+const MessageComponent = React.memo(({ message }: { message: ChatMessage & { index?: number }, index: number }) => (
   <motion.div
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}

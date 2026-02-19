@@ -9,7 +9,6 @@ type LocationData = {
 
 export function useDriverLocation(driverId: number | null) {
   const [location, setLocation] = useState<LocationData | null>(null);
-  const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
     if (!driverId) return;
@@ -17,8 +16,6 @@ export function useDriverLocation(driverId: number | null) {
     const newSocket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:3000", {
       query: { driverId: driverId.toString() },
     });
-
-    setSocket(newSocket);
 
     newSocket.on("connect", () => {
       console.log("Connected to location WebSocket server");
@@ -36,7 +33,6 @@ export function useDriverLocation(driverId: number | null) {
 
     return () => {
       newSocket.disconnect();
-      setSocket(null);
     };
   }, [driverId]);
 

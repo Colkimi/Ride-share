@@ -13,10 +13,7 @@ import {
   Shield,
   MapPin,
   FileText,
-  Bell,
-  Search,
   Share2,
-  History,
   UserPlus
 } from "lucide-react"
 
@@ -32,7 +29,6 @@ import {
 } from "@/components/ui/sidebar"
 import { useAuth } from "@/hooks/useAuth"
 import { Link, useLocation } from "@tanstack/react-router"
-import { useEffect } from "react"
 
 interface MenuItem {
   title: string

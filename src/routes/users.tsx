@@ -1,7 +1,6 @@
 import { getUsers } from '@/api/Users'
 import { queryOptions } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import Layout from '@/components/Layout'
 import UserList from '@/components/UserList'
 
 const usersQueryOptions = queryOptions({
