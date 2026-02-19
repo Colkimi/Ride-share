@@ -34,6 +34,7 @@ import { Route as AdminDashboardRouteImport } from './routes/adminDashboard'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as LayoutRouteImport } from './routes/_layout'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as UsersCreateRouteImport } from './routes/users.create'
 import { Route as PaymentBookingIdRouteImport } from './routes/payment/bookingId'
 
@@ -161,6 +162,11 @@ const LayoutRoute = LayoutRouteImport.update({
   id: '/_layout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UsersCreateRoute = UsersCreateRouteImport.update({
   id: '/create',
   path: '/create',
@@ -173,6 +179,7 @@ const PaymentBookingIdRoute = PaymentBookingIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/adminDashboard': typeof AdminDashboardRoute
@@ -201,6 +208,7 @@ export interface FileRoutesByFullPath {
   '/users/create': typeof UsersCreateRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/adminDashboard': typeof AdminDashboardRoute
@@ -230,6 +238,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/_layout': typeof LayoutRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
@@ -261,6 +270,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/about'
     | '/account'
     | '/adminDashboard'
@@ -289,6 +299,7 @@ export interface FileRouteTypes {
     | '/users/create'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/about'
     | '/account'
     | '/adminDashboard'
@@ -317,6 +328,7 @@ export interface FileRouteTypes {
     | '/users/create'
   id:
     | '__root__'
+    | '/'
     | '/_layout'
     | '/about'
     | '/account'
@@ -347,6 +359,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   LayoutRoute: typeof LayoutRoute
   AboutRoute: typeof AboutRoute
   AccountRoute: typeof AccountRoute
@@ -552,6 +565,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/users/create': {
       id: '/users/create'
       path: '/create'
@@ -580,6 +600,7 @@ const UsersRouteChildren: UsersRouteChildren = {
 const UsersRouteWithChildren = UsersRoute._addFileChildren(UsersRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   LayoutRoute: LayoutRoute,
   AboutRoute: AboutRoute,
   AccountRoute: AccountRoute,

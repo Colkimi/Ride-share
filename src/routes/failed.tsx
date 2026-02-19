@@ -75,7 +75,7 @@ function RouteComponent() {
             
             <div className="flex space-x-3">
               <button 
-                onClick={() => navigate({ to: '/landing' })}
+                onClick={() => navigate({ to: '/' })}
                 className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 transition duration-200"
               >
                 Go Home

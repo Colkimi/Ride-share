@@ -63,7 +63,7 @@ export default function Header() {
   const handleLogout = () => {
     logout()
     toast.success('Logged out successfully')
-    navigate({ to: '/landing' })
+    navigate({ to: '/' })
   }
 
   const menuItems = getMenuItems()
