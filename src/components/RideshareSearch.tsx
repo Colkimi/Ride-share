@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ModernCard, ModernCardHeader, ModernCardTitle, ModernCardContent } from './ui/modern-card'
 import { Button } from './ui/button'
@@ -15,7 +15,6 @@ import {
   Navigation,
   User,
   MessageSquare,
-  Calendar,
   Loader2
 } from 'lucide-react'
 import { LocationSearch } from './LocationSearch'
@@ -130,7 +129,7 @@ export default function RideshareSearch({ onRideshareCreated }: RideshareSearchP
       case ShareType.ROUTE_SHARE:
         return 'bg-blue-100 text-blue-800'
       case ShareType.DESTINATION_SHARE:
-        return 'bg-purple-100 text-purple-800'
+        return 'bg-sky-100 text-sky-800'
       default:
         return 'bg-gray-100 text-gray-800'
     }

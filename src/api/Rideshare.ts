@@ -1,6 +1,6 @@
 import { handleApiResponse } from './apiUtils';
 
-const url = 'http://localhost:8000';
+const url = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 export enum RideshareStatus {
   PENDING = 'pending',

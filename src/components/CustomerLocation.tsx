@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+﻿import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ModernCard, ModernCardHeader, ModernCardTitle, ModernCardContent } from './ui/modern-card'
 import { Button } from './ui/button'
 import { 
@@ -9,7 +8,6 @@ import {
   Plus, 
   Edit3, 
   Trash2, 
-  Clock,
   Star,
   Navigation,
   Eye,
@@ -22,7 +20,6 @@ import Map from './Map'
 import DemoTrackingPage from './Demo'
 import { 
   getUserLocations, 
-  getLocationsByUserId,
   createUserLocation, 
   updateUserLocation, 
   deleteUserLocation,
@@ -30,12 +27,11 @@ import {
   Label
 } from '../api/Location'
 import { useAuth } from '../hooks/useAuth'
+import { useState } from 'react'
 
 interface CustomerLocation extends Location {
   location_id: number;
 }
-
-type TabType = 'locations' | 'demo'
 
 interface LocationFormData {
   label: Label;
@@ -48,7 +44,7 @@ interface LocationFormData {
 export default function CustomerLocations() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<TabType>('locations');
+  const [activeTab, setActiveTab] = useState<'locations' | 'demo'>('locations');
   const [showLocationForm, setShowLocationForm] = useState(false);
   const [editingLocation, setEditingLocation] = useState<CustomerLocation | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
@@ -191,10 +187,6 @@ export default function CustomerLocations() {
     }
   };
 
-  if (activeTab === 'demo') {
-    return <DemoTrackingPage />
-  }
-
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -236,6 +228,11 @@ export default function CustomerLocations() {
             </Button>
           </div>
         </div>
+
+        {activeTab === 'demo' ? (
+          <DemoTrackingPage />
+        ) : (
+          <>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Saved Locations */}
@@ -288,7 +285,7 @@ export default function CustomerLocations() {
                           ) : location.type === 'work' ? (
                             <Briefcase className="h-5 w-5 text-blue-600" />
                           ) : (
-                            <MapPin className="h-5 w-5 text-purple-600" />
+                            <MapPin className="h-5 w-5 text-sky-600" />
                           )}
                         </div>
                         <div className="flex-1">
@@ -451,22 +448,6 @@ export default function CustomerLocations() {
                 <Map 
                   selectedLocation={selectedLocation} 
                   showUserLocations={true}
-                  onLocationSelect={(location) => {
-                    const newLocation = {
-                      latitude: location[0],
-                      longitude: location[1],
-                      label: formData.label || Label.CUSTOM,
-                      address: `${location[0].toFixed(4)}, ${location[1].toFixed(4)}`
-                    };
-                    
-                    setSelectedLocation(newLocation);
-                    setFormData({
-                      ...formData,
-                      latitude: location[0],
-                      longitude: location[1],
-                      address: newLocation.address
-                    });
-                  }}
                 />
               </div>
             </ModernCardContent>
@@ -476,7 +457,7 @@ export default function CustomerLocations() {
         {/* Demo Card */}
         <ModernCard>
           <ModernCardContent>
-            <div className="flex items-center justify-between p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg">
+            <div className="flex items-center justify-between p-6 bg-gradient-to-r from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg">
               <div className="flex items-center space-x-4">
                 <div className="p-3 bg-blue-100 dark:bg-blue-800 rounded-full">
                   <Navigation className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -500,6 +481,8 @@ export default function CustomerLocations() {
             </div>
           </ModernCardContent>
         </ModernCard>
+        </>
+        )}
       </div>
     </div>
   )

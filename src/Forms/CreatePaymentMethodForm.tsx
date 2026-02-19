@@ -1,4 +1,4 @@
-import { useForm, Field } from '@tanstack/react-form'
+﻿import { useForm, Field } from '@tanstack/react-form'
 import { Toaster, toast } from 'sonner'
 import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
@@ -94,7 +94,7 @@ export function CreatePaymentMethodForm({ onSuccess }: CreatePaymentMethodFormPr
       <Toaster richColors position="top-center" closeButton={false} />
       <div className="max-w-md mx-auto bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-gray-200 dark:border-slate-700 overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+        <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-6 text-white">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-white/20 rounded-lg">
               <CreditCard className="w-6 h-6" />
@@ -278,7 +278,7 @@ export function CreatePaymentMethodForm({ onSuccess }: CreatePaymentMethodFormPr
               <button
                 type="submit"
                 disabled={!canSubmit || isSubmitting || paymentMethodMutation.isPending}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2"
+                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2"
               >
                 {isSubmitting || paymentMethodMutation.isPending ? (
                   <>

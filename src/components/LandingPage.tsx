@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
@@ -34,7 +34,7 @@ export function Hero() {
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-yellow-400/15 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-br from-purple-900/30 via-blue-900/30 to-indigo-900/30 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-br from-sky-900/30 via-blue-900/30 to-sky-900/30 rounded-full blur-3xl"></div>
         
         {/* Atmospheric Particles */}
         <motion.div
@@ -232,7 +232,7 @@ export function Hero() {
                 filter: "brightness(1.4) blur(0.5px) saturate(1.3)"
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-400/30 to-blue-500/30 rounded-xl blur-md"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-sky-400/30 to-blue-500/30 rounded-xl blur-md"></div>
             
             {/* Floating Car Glow */}
             <motion.div
@@ -352,7 +352,7 @@ export function Hero() {
               filter: "brightness(0.9) blur(0.5px) saturate(1.1)"
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-400/10 to-purple-400/10 rounded-lg"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-400/10 to-cyan-400/10 rounded-lg"></div>
         </motion.div>
 
         {/* Second Background Car */}
@@ -574,7 +574,7 @@ export function ImageGallery() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
             Experience Premium Comfort
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
@@ -657,7 +657,7 @@ export function ImageGallery() {
             Ready to experience the difference? Book your ride today!
           </p>
           <button
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 transform"
+            className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 transform"
             onClick={() => {
               if (localStorage.getItem("accessToken") === null) {
                 window.location.href = "/login";
@@ -707,7 +707,7 @@ export function HowItWorks() {
         backgroundImage: ` url('/ride5.webp')`,
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-900/50 to-purple-900/50"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-900/50 to-cyan-900/50"></div>
       
       <div className="relative z-10 max-w-7xl mx-auto">
         <motion.div
@@ -780,7 +780,7 @@ export function Features() {
       icon: "💳",
       title: "Secure Payments",
       desc: "Multiple payment options with bank-level encryption. No cash needed, everything digital.",
-      color: "from-purple-400 to-purple-600"
+      color: "from-sky-400 to-cyan-600"
     },
     {
       icon: "⭐",
@@ -798,7 +798,7 @@ export function Features() {
       icon: "💬",
       title: "24/7 Support",
       desc: "Round-the-clock customer support to help you with any questions or concerns.",
-      color: "from-pink-400 to-rose-600"
+      color: "from-cyan-400 to-cyan-600"
     }
   ];
 
@@ -818,7 +818,7 @@ export function Features() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-cyan-400">
             Why Choose RideEasy?
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
@@ -857,7 +857,7 @@ export function Features() {
 
 export function Footer() {
   return (
-    <footer className="bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 text-white">
+    <footer className="bg-gradient-to-br from-gray-900 via-blue-900 to-cyan-900 text-white">
       <div className="max-w-7xl mx-auto px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Brand Section */}
@@ -1033,7 +1033,7 @@ export function LandingPage() {
           className="fixed bottom-4 right-4 w-96 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border dark:border-slate-600 overflow-hidden z-50"
         >
           {/* Chat Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white">
+          <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-4 text-white">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <img src="/bot.png" alt="RideEasy" className="w-8 h-8 rounded-full mr-3 border-2 border-white/30" />
@@ -1067,7 +1067,7 @@ export function LandingPage() {
                 )}
                 <div className={`rounded-2xl px-4 py-2 max-w-xs shadow-sm ${
                   msg.sender === "user" 
-                    ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white" 
+                    ? "bg-gradient-to-r from-blue-500 to-cyan-600 text-white" 
                     : "bg-white dark:bg-slate-700 text-gray-800 dark:text-gray-200 border dark:border-slate-600"
                 }`}>
                   {msg.content}
@@ -1110,7 +1110,7 @@ export function LandingPage() {
               <Button 
                 onClick={handleSendMessage} 
                 disabled={isLoading || !inputMessage.trim()}
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-xl px-4"
+                className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 rounded-xl px-4"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
@@ -1148,7 +1148,7 @@ export function LandingPage() {
               setIsChatOpen(true);
               setIsToasterVisible(false);
             }}
-            className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-2xl z-[9999] transition-all duration-300"
+            className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-2xl z-[9999] transition-all duration-300"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />

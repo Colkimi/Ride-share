@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+﻿import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, isSameMonth } from 'date-fns';
 import { getBookings, type Booking } from '@/api/Bookings';
@@ -14,7 +14,6 @@ import {
   MapPin, 
   Clock, 
   DollarSign,
-  User,
   Car
 } from 'lucide-react';
 
@@ -198,7 +197,7 @@ function Calendar({ className = "" }: CalendarProps) {
     <div className={`space-y-6 ${className}`}>
       {/* Calendar Header */}
       <ModernCard>
-        <ModernCardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <ModernCardHeader className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <CalendarIcon className="h-6 w-6" />
@@ -442,8 +441,8 @@ function Calendar({ className = "" }: CalendarProps) {
               <div className="text-sm text-gray-600 dark:text-gray-400">Active</div>
             </div>
             
-            <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+            <div className="text-center p-4 bg-sky-50 dark:bg-sky-900/20 rounded-lg">
+              <div className="text-2xl font-bold text-sky-600 dark:text-sky-400">
                 ${bookings
                   .filter(b => b.status?.toLowerCase() === 'completed')
                   .reduce((sum, b) => {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8000';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 const ROUTE_COORDINATES = [
   { lat: -1.2921, lng: 36.8219 }, // Nairobi CBD

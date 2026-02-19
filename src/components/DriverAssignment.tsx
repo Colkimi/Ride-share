@@ -37,7 +37,8 @@ export const DriverAssignmentModal: React.FC<DriverAssignmentModalProps> = ({
     queryKey: ['allAvailableDrivers'],
     queryFn: async () => {
       const accessToken = localStorage.getItem('accessToken');
-      const response = await fetch(`http://localhost:8000/driver/available`, {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+      const response = await fetch(`${API_BASE_URL}/driver/available`, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json',

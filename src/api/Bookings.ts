@@ -56,7 +56,7 @@ export interface NearbyDriver {
 export type CreateBookingData = Partial<Booking>;
 export type UpdateBookingData = Partial<Booking> & { id: number };
 
-const url = 'http://localhost:8000';
+const url = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 const handleApiResponse = async (response: Response) => {
   if (!response.ok) {
@@ -89,7 +89,7 @@ export const getRoute = async (
 ): Promise<RouteResponse> => {
   const accessToken = localStorage.getItem('accessToken');
   const response = await fetch(
-    `http://localhost:8000/bookings/route?startLat=${startLatitude}&startLng=${startLongitude}&endLat=${endLatitude}&endLng=${endLongitude}`,
+    `${url}/bookings/route?startLat=${startLatitude}&startLng=${startLongitude}&endLat=${endLatitude}&endLng=${endLongitude}`,
     {
       headers: {
         'Authorization': `Bearer ${accessToken}`,

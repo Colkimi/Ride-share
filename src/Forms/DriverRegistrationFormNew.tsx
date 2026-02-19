@@ -1,4 +1,4 @@
-import { useForm, Field } from '@tanstack/react-form';
+﻿import { useForm, Field } from '@tanstack/react-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Toaster, toast } from 'sonner';
 import { z } from 'zod';
@@ -195,11 +195,11 @@ export function DriverRegistrationForm() {
           {/* Header Section */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-6">
-              <div className="p-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl shadow-lg">
+              <div className="p-4 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-3xl shadow-lg">
                 <Truck className="w-12 h-12 text-white" />
               </div>
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-4">
               Join Our Driver Network
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
@@ -237,13 +237,13 @@ export function DriverRegistrationForm() {
                     <p className="text-sm text-green-700 dark:text-green-300">Competitive rates & tips</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl">
-                  <div className="p-3 bg-purple-500 rounded-full">
+                <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-sky-50 to-sky-100 dark:from-sky-900/20 dark:to-cyan-800/20 rounded-xl">
+                  <div className="p-3 bg-sky-500 rounded-full">
                     <Shield className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-purple-900 dark:text-purple-100">Safety First</h3>
-                    <p className="text-sm text-purple-700 dark:text-purple-300">24/7 support & insurance</p>
+                    <h3 className="font-semibold text-sky-900 dark:text-sky-100">Safety First</h3>
+                    <p className="text-sm text-sky-700 dark:text-sky-300">24/7 support & insurance</p>
                   </div>
                 </div>
               </div>
@@ -259,7 +259,7 @@ export function DriverRegistrationForm() {
             
             {/* Driver Information Section */}
             <Card className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm shadow-xl border-0">
-              <CardHeader className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-b">
+              <CardHeader className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-b">
                 <CardTitle className="flex items-center space-x-3">
                   <div className="p-2 bg-blue-500 rounded-xl">
                     <User className="w-6 h-6 text-white" />
@@ -639,7 +639,7 @@ export function DriverRegistrationForm() {
                   <Button 
                     type="submit"
                     disabled={!canSubmit || isSubmitting || createDriverMutation.isPending}
-                    className="px-12 py-4 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    className="px-12 py-4 text-lg font-semibold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   >
                     {isSubmitting || createDriverMutation.isPending ? (
                       <div className="flex items-center space-x-2">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import {
@@ -524,8 +524,8 @@ export function HelpSupport() {
 									</div>
 
 									<div className="flex items-center space-x-3">
-										<div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-full">
-											<Clock className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+										<div className="p-2 bg-sky-100 dark:bg-sky-900/30 rounded-full">
+											<Clock className="h-4 w-4 text-sky-600 dark:text-sky-400" />
 										</div>
 										<div>
 											<p className="font-semibold">Business Hours</p>

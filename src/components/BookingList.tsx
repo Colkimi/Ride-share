@@ -7,9 +7,8 @@ import { useAuth } from '@/hooks/useAuth'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { MapPin, Route, Clock, Navigation, Car, User, ArrowRight, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react'
+import { MapPin, Route, Clock, Navigation, Car, ArrowRight, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react'
 import MapWithRoute from './MapWithRoute'
-import { RoutePreview } from './RoutePreview'
 import ActiveBookingCard from './ActiveBookingCard'
 import { DriverAssignmentModal } from './DriverAssignment';
 import { useNavigate } from '@tanstack/react-router'
@@ -28,22 +27,6 @@ interface BookingWithRoute {
   duration: number;
   driverId?: number;
   driverName?: string;
-}
-
-interface RouteInstructions {
-  bookingId: number;
-  pickupLocation: {
-    latitude: number;
-    longitude: number;
-  };
-  dropoffLocation: {
-    latitude: number;
-    longitude: number;
-  };
-  instructions: string[]; 
-  totalDistance: number;
-  totalDuration: number;
-  estimatedArrival: string;
 }
 
 function BookingList() {

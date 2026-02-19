@@ -14,7 +14,7 @@ export function useDriverLocation(driverId: number | null) {
   useEffect(() => {
     if (!driverId) return;
 
-    const newSocket = io("http://localhost:3000", {
+    const newSocket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:3000", {
       query: { driverId: driverId.toString() },
     });
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -139,7 +139,7 @@ const Notifications: React.FC = () => {
       case 'system':
         return <Info className="w-5 h-5 text-gray-500" />;
       case 'promotion':
-        return <AlertCircle className="w-5 h-5 text-purple-500" />;
+        return <AlertCircle className="w-5 h-5 text-sky-500" />;
       default:
         return <Bell className="w-5 h-5 text-gray-500" />;
     }
@@ -156,7 +156,7 @@ const Notifications: React.FC = () => {
       case 'system':
         return 'border-l-gray-500';
       case 'promotion':
-        return 'border-l-purple-500';
+        return 'border-l-sky-500';
       default:
         return 'border-l-gray-300';
     }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import { useForm, Field } from '@tanstack/react-form'
 import styles from '../FormStyles.module.css'
 import { Toaster, toast } from 'sonner'
@@ -412,7 +412,7 @@ export function CreateBookingForm() {
     if (location.is_default) return <Star className="h-4 w-4 text-yellow-500 fill-current" />
     if (location.type === 'home' || location.label === 'home') return <Home className="h-4 w-4 text-green-600" />
     if (location.type === 'work' || location.label === 'work') return <Briefcase className="h-4 w-4 text-blue-600" />
-    return <MapPin className="h-4 w-4 text-purple-600" />
+    return <MapPin className="h-4 w-4 text-sky-600" />
   }
 
   // Handle rideshare selection
@@ -926,7 +926,7 @@ export function CreateBookingForm() {
                               {/* Header with user info and match percentage */}
                               <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center space-x-3">
-                                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-md">
+                                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center text-white font-semibold shadow-md">
                                     {ride.primaryUser.firstName.charAt(0)}{ride.primaryUser.lastName.charAt(0)}
                                   </div>
                                   <div>
@@ -948,7 +948,7 @@ export function CreateBookingForm() {
                                 <div className="text-right">
                                   <Badge 
                                     variant="secondary" 
-                                    className="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border-blue-200 font-semibold px-3 py-1"
+                                    className="bg-gradient-to-r from-blue-100 to-sky-100 text-blue-800 border-blue-200 font-semibold px-3 py-1"
                                   >
                                     {ride.matchPercentage}% match
                                   </Badge>
@@ -977,7 +977,7 @@ export function CreateBookingForm() {
                                   <span className="text-sm">{ride.availableSeats} seats left</span>
                                 </div>
                                 <div className="flex items-center space-x-2 text-gray-600">
-                                  <Clock className="h-4 w-4 text-purple-500" />
+                                  <Clock className="h-4 w-4 text-sky-500" />
                                   <span className="text-sm">
                                     {new Date(ride.pickup_time).toLocaleTimeString('en-US', {
                                       hour: '2-digit',

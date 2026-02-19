@@ -1,4 +1,4 @@
-import { getUsers, updateUser, type User } from '@/api/Users'
+﻿import { getUsers, updateUser, type User } from '@/api/Users'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast, Toaster } from 'sonner';
 import { useState, useEffect } from 'react';
@@ -210,7 +210,7 @@ export default function Account() {
       
       <div className="max-w-2xl mx-auto">
         <ModernCard className="overflow-hidden">
-          <ModernCardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+          <ModernCardHeader className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <Avatar className="h-16 w-16 border-4 border-white/20">

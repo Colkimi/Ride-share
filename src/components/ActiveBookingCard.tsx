@@ -18,7 +18,6 @@ const ActiveBookingCard: React.FC<ActiveBookingCardProps> = ({
   onStatusUpdate,
 }) => {
   const [error, setError] = React.useState<string | null>(null);
-  const [isLoading, setIsLoading] = React.useState(false);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -55,14 +54,11 @@ const ActiveBookingCard: React.FC<ActiveBookingCardProps> = ({
   };
 
   const handleStatusUpdate = async () => {
-    setIsLoading(true);
     setError(null);
     try {
       await onStatusUpdate?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setIsLoading(false);
     }
   };
 

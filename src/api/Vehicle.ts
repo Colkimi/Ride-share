@@ -13,7 +13,7 @@ export interface Vehicle {
 export type CreateVehicleData = Omit<Vehicle, 'vehicle_id'>;
 export type UpdateVehicleData = Partial<Vehicle> & { vehicle_id: number };
 
-const url = 'http://localhost:8000';
+const url = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 const handleApiResponse = async (response: Response) => {
   if (!response.ok) {

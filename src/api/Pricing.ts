@@ -11,7 +11,7 @@ export interface Pricing {
 export type CreatePricingData = Omit<Pricing, 'id'>;
 export type UpdatePricingData = Partial<Pricing> & { id: number };
 
-const url = 'http://localhost:8000';
+const url = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 const handleApiResponse = async (response: Response) => {
   if (!response.ok) {

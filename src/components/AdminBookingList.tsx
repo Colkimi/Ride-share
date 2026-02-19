@@ -1,18 +1,12 @@
-import { useState, useEffect } from 'react'
+﻿import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getBookings, deleteBooking, updateBooking, type Booking, type UpdateBookingData, Status } from '@/api/Bookings'
-import { getDrivers, type Driver } from '@/api/Driver'
+import { getDrivers } from '@/api/Driver'
 import styles from '../FormStyles.module.css'
 import { Toaster, toast } from 'sonner'
 import { useAuth } from '@/hooks/useAuth'
 import { CreateBookingForm } from '@/Forms/CreateBookingForm'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react'
 import { DriverAssignmentModal } from './DriverAssignment';
 
@@ -72,7 +66,7 @@ function AdminBookingList() {
     return <div className="p-6">Error loading bookings.</div>
   }
 
-  const bookings = (() => {
+  const getFilteredBookings = () => {
     if (!paginatedData?.bookings) return [];
     
     switch (user?.role) {
@@ -94,7 +88,7 @@ function AdminBookingList() {
       default:
         return [];
     }
-  })();
+  };
 
   const handleDelete = (id?: number) => {
     if (!id) return
@@ -323,7 +317,7 @@ function AdminBookingList() {
         )}
       </div>
 
-      {paginatedData?.bookings && paginatedData.bookings.length > 0 ? (
+      {getFilteredBookings().length > 0 ? (
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <table className={styles.table}>
             <thead>
@@ -341,7 +335,7 @@ function AdminBookingList() {
               </tr>
             </thead>
             <tbody>
-              {paginatedData.bookings.map((booking) => (
+              {getFilteredBookings().map((booking) => (
                 <tr key={booking.id}>
                   <td>{booking.id}</td>
                   <td>
@@ -357,7 +351,7 @@ function AdminBookingList() {
                       booking.status === Status.Completed ? 'bg-green-100 text-green-800' :
                       booking.status === Status.Requested ? 'bg-yellow-100 text-yellow-800' :
                       booking.status === Status.Accepted ? 'bg-blue-100 text-blue-800' :
-                      booking.status === Status.In_progress ? 'bg-purple-100 text-purple-800' :
+                      booking.status === Status.In_progress ? 'bg-sky-100 text-sky-800' :
                       booking.status === Status.Cancelled ? 'bg-red-100 text-red-800' :
                       'bg-gray-100 text-gray-800'
                     }`}>

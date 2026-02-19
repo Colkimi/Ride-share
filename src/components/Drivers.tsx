@@ -1,16 +1,15 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getDrivers, updateDriver, deleteDriver, Status, type Driver } from '@/api/Driver';
 import { ModernCard, ModernCardHeader, ModernCardTitle, ModernCardContent } from '@/components/ui/modern-card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Search, Eye, Edit, Trash2, CheckCircle, XCircle, AlertCircle, Plus, Filter, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { Edit, Trash2, CheckCircle, XCircle, AlertCircle, Plus, Filter, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from '@tanstack/react-router';
 
@@ -31,7 +30,6 @@ export function Drivers() {
   const [selectedDriver, setSelectedDriver] = useState<DriverWithUser | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [editingDriver, setEditingDriver] = useState<DriverWithUser | null>(null);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -343,7 +341,7 @@ export function Drivers() {
             </ModernCardContent>
           </ModernCard>
 
-          <ModernCard interactive className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+          <ModernCard interactive className="bg-gradient-to-r from-sky-500 to-cyan-600 text-white">
             <ModernCardHeader>
               <ModernCardTitle className="text-white">Available</ModernCardTitle>
             </ModernCardHeader>
@@ -351,7 +349,7 @@ export function Drivers() {
               <div className="text-3xl font-bold">
                 {drivers.filter((d: DriverWithUser) => d.isAvailable).length}
               </div>
-              <p className="text-sm text-purple-100 mt-1">Currently online</p>
+              <p className="text-sm text-sky-100 mt-1">Currently online</p>
             </ModernCardContent>
           </ModernCard>
         </div>

@@ -20,7 +20,7 @@ export interface Discount {
 export type CreateDiscountData = Omit<Discount, 'id'>;
 export type UpdateDiscountData = Partial<Discount> & { id: number };
 
-const url = 'http://localhost:8000';
+const url = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 const handleApiResponse = async (response: Response) => {
   if (!response.ok) {

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from '@tanstack/react-router';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, subDays, subWeeks, subMonths } from 'date-fns';
 import {
@@ -16,7 +16,6 @@ import {
   ArrowLeft,
   Car,
   Clock,
-  Star,
   Wallet,
   CreditCard,
   PiggyBank,
@@ -368,10 +367,10 @@ const Earnings: React.FC = () => {
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">This Month</CardTitle>
-              <Target className="w-4 h-4 text-purple-500" />
+              <Target className="w-4 h-4 text-sky-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-purple-600">
+              <div className="text-2xl font-bold text-sky-600">
                 ${earningsSummary.monthlyEarnings.toFixed(2)}
               </div>
               <div className="flex items-center text-xs">

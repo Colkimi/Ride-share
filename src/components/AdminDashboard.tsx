@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { format } from 'date-fns';
+﻿import { format } from 'date-fns';
 import { useAdminDashboard } from '@/hooks/useAnalytics';
 import { ModernCard, ModernCardHeader, ModernCardTitle, ModernCardContent } from '@/components/ui/modern-card';
 import {
@@ -41,7 +40,6 @@ import { Drivers } from './Drivers';
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
 export function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('overview');
   const { data: dashboardData, isLoading, error } = useAdminDashboard();
 
   const currentDate = format(new Date(), 'MMMM d, yyyy');
@@ -188,14 +186,14 @@ export function AdminDashboard() {
             </ModernCardContent>
           </ModernCard>
 
-          <ModernCard interactive className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+          <ModernCard interactive className="bg-gradient-to-r from-sky-500 to-cyan-600 text-white">
             <ModernCardHeader>
               <ModernCardTitle className="text-white">Total Revenue</ModernCardTitle>
-              <DollarSign className="w-5 h-5 text-purple-100" />
+              <DollarSign className="w-5 h-5 text-sky-100" />
             </ModernCardHeader>
             <ModernCardContent>
               <div className="text-3xl font-bold">{formatCurrency(dashboardData.systemOverview.totalRevenue)}</div>
-              <p className="text-sm text-purple-100 mt-1">Lifetime earnings</p>
+              <p className="text-sm text-sky-100 mt-1">Lifetime earnings</p>
             </ModernCardContent>
           </ModernCard>
 
@@ -223,7 +221,7 @@ export function AdminDashboard() {
         </div>
 
         {/* Main Content */}
-        <Tabs defaultValue="overview" onValueChange={setActiveTab} className="space-y-4">
+        <Tabs defaultValue="overview" className="space-y-4">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="revenue">Revenue</TabsTrigger>
@@ -275,7 +273,7 @@ export function AdminDashboard() {
                         fill="#8884d8"
                         dataKey="value"
                       >
-                        {rideTimeData.map((entry, index) => (
+                        {rideTimeData.map((_, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
@@ -472,12 +470,12 @@ export function AdminDashboard() {
                       <Badge variant="default" className="bg-green-500">{dashboardData.pendingActions.newDiscounts}</Badge>
                     </div>
                     
-                    <div className="flex items-center justify-between p-4 bg-purple-50 rounded-lg">
+                    <div className="flex items-center justify-between p-4 bg-sky-50 rounded-lg">
                       <div>
-                        <h4 className="font-medium text-purple-900">Government Deals</h4>
-                        <p className="text-sm text-purple-700">{dashboardData.pendingActions.governmentDeals} deals awaiting approval</p>
+                        <h4 className="font-medium text-sky-900">Government Deals</h4>
+                        <p className="text-sm text-sky-700">{dashboardData.pendingActions.governmentDeals} deals awaiting approval</p>
                       </div>
-                      <Badge variant="default" className="bg-purple-500">{dashboardData.pendingActions.governmentDeals}</Badge>
+                      <Badge variant="default" className="bg-sky-500">{dashboardData.pendingActions.governmentDeals}</Badge>
                     </div>
                   </div>
                 </CardContent>
@@ -505,11 +503,11 @@ export function AdminDashboard() {
         </div>
       </div>
       
-      <div className="flex items-center space-x-3 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-        <Car className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+      <div className="flex items-center space-x-3 p-3 bg-sky-50 dark:bg-sky-900/20 rounded-lg">
+        <Car className="w-5 h-5 text-sky-600 dark:text-sky-400" />
         <div>
           <p className="text-sm text-gray-600 dark:text-gray-300">Total Drivers</p>
-          <p className="text-lg font-bold text-purple-600 dark:text-purple-400">{formatNumber(dashboardData.systemOverview.totalDrivers)}</p>
+          <p className="text-lg font-bold text-sky-600 dark:text-sky-400">{formatNumber(dashboardData.systemOverview.totalDrivers)}</p>
         </div>
       </div>
       

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useRef, useEffect, useCallback, useMemo } from 'react';
+﻿import React, { createContext, useContext, useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -309,7 +309,7 @@ useEffect(() => {
             style={{ transition: 'height 0.3s ease' }}
           >
             {/* Chat Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white">
+            <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-4 text-white">
               <div className="flex justify-between items-center">
                 <div className="flex items-center">
                   <img 
@@ -386,7 +386,7 @@ useEffect(() => {
                       <Button 
                         onClick={handleSendMessage} 
                         disabled={isLoading || !inputMessage.trim()}
-                        className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-xl px-4"
+                        className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 rounded-xl px-4"
                       >
                         <Send className="w-4 h-4" />
                       </Button>
@@ -417,7 +417,7 @@ useEffect(() => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={toggleChat}
-        className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-2xl z-[9999] transition-all duration-300"
+        className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-2xl z-[9999] transition-all duration-300"
       >
         <div className="relative">
           <MessageCircle className="w-6 h-6" />
@@ -451,7 +451,7 @@ const MessageComponent = React.memo(({ message, index }: { message: ChatMessage 
     <div 
       className={`rounded-2xl px-4 py-3 max-w-xs shadow-sm ${
         message.sender === 'user' 
-          ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white' 
+          ? 'bg-gradient-to-r from-blue-500 to-cyan-600 text-white' 
           : 'bg-white dark:bg-slate-700 text-gray-800 dark:text-gray-200 border dark:border-slate-600'
       }`}
     >

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState } from 'react'
 import { ModernCard, ModernCardHeader, ModernCardTitle, ModernCardContent } from './ui/modern-card'
 import { Button } from './ui/button'
 import { Badge } from './ui/badge'
@@ -59,7 +59,7 @@ export default function DemoTrackingPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Hero Section */}
-        <div className="text-center py-12 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl shadow-lg">
+        <div className="text-center py-12 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-2xl shadow-lg">
           <div className="max-w-4xl mx-auto px-6">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Real-Time Driver Tracking Demo
@@ -161,11 +161,11 @@ export default function DemoTrackingPage() {
                 </div>
               </div>
 
-              <div className="flex items-center p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                <Zap className="h-5 w-5 text-purple-600 mr-2" />
+              <div className="flex items-center p-3 bg-sky-50 dark:bg-sky-900/20 rounded-lg">
+                <Zap className="h-5 w-5 text-sky-600 mr-2" />
                 <div>
-                  <p className="text-sm font-medium text-purple-900 dark:text-purple-100">Updates</p>
-                  <p className="text-xs text-purple-700 dark:text-purple-300">
+                  <p className="text-sm font-medium text-sky-900 dark:text-sky-100">Updates</p>
+                  <p className="text-xs text-sky-700 dark:text-sky-300">
                     {liveLocation ? 'Receiving' : 'No Signal'}
                   </p>
                 </div>
@@ -282,8 +282,8 @@ export default function DemoTrackingPage() {
 
           <ModernCard>
             <ModernCardContent className="p-6 text-center">
-              <div className="p-3 bg-purple-100 dark:bg-purple-900/20 rounded-full w-fit mx-auto mb-4">
-                <Eye className="h-8 w-8 text-purple-600" />
+              <div className="p-3 bg-sky-100 dark:bg-sky-900/20 rounded-full w-fit mx-auto mb-4">
+                <Eye className="h-8 w-8 text-sky-600" />
               </div>
               <h3 className="font-semibold text-lg mb-2">Interactive Demo</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm">

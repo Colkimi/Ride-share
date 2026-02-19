@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { ModernCard, ModernCardHeader, ModernCardTitle, ModernCardContent } from './ui/modern-card'
 import { Button } from './ui/button'
@@ -15,16 +15,12 @@ import {
   AlertTriangle,
   Navigation,
   TrendingUp,
-  Clock,
-  DollarSign,
   Shield,
   Phone,
-  Mail,
   Star,
   Zap
 } from 'lucide-react'
 import Map from './Map'
-import { useDriverLocation } from '../hooks/useDriverLocation'
 import { getDrivers, type Driver } from '../api/Driver'
 import { getBookings, type Booking } from '../api/Bookings'
 import DemoTrackingPage from './Demo'
@@ -196,8 +192,8 @@ export default function AdminDriverManagement() {
           <ModernCard>
             <ModernCardContent className="flex items-center p-6">
               <div className="flex items-center">
-                <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-full">
-                  <Shield className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                <div className="p-2 bg-sky-100 dark:bg-sky-900/20 rounded-full">
+                  <Shield className="h-6 w-6 text-sky-600 dark:text-sky-400" />
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Available</p>

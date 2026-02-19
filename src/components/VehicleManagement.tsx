@@ -17,11 +17,11 @@ import Loader from './Loaders'
 
 function VehicleManagement() {
   const queryClient = useQueryClient()
-  const { user, loading: authLoading } = useAuth() 
+  const { user } = useAuth() 
   let userId = localStorage.getItem('userId');
   
   const [page, setPage] = useState(1)
-  const [limit, setLimit] = useState(10)
+  const [limit] = useState(10)
   
   const { data: vehicleData = { vehicles: [], total: 0 }, isLoading, isError } = useQuery({
     queryKey: ['vehicle', page, limit, user?.userId], 

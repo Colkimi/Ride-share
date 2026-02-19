@@ -14,13 +14,6 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
   className = '' 
 }) => {
   const navigate = useNavigate();
-  const formatMessage = (text: string) => {
-    return text.split('\n').map((line, index) => (
-<div key={index} className="chat-message-line">
-  {line}
-</div>
-    ));
-  };
   const formattedContent = sender === 'bot' 
     ? MessageFormatter.formatBotMessage(content)
     : MessageFormatter.formatUserMessage(content);

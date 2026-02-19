@@ -1,8 +1,7 @@
-import { useCustomerDashboard } from '@/hooks/useAnalytics';
+﻿import { useCustomerDashboard } from '@/hooks/useAnalytics';
 import { useQuery } from '@tanstack/react-query';
 import { getMyBookings, type Booking } from '@/api/Bookings';
-import { getDrivers } from '@/api/Driver';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useDriverLocation } from '@/hooks/useDriverLocation';
 import MapWithRoute from './MapWithRoute';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -29,7 +28,6 @@ import {
   Calendar,
   DollarSign,
   TrendingUp,
-  TrendingDown,
   Activity,
   AlertCircle,
   Clock,
@@ -47,7 +45,6 @@ import { DriverRegistrationForm } from '@/Forms/DriverRegistrationForm';
 
 export function CustomerDashboard() {
   const { data: dashboardData, isLoading, error } = useCustomerDashboard();
-  const [assignedDriver, setAssignedDriver] = useState<any>(null);
   const [selectedBookingForTracking, setSelectedBookingForTracking] = useState<Booking | null>(null);
   const [showDriverMap, setShowDriverMap] = useState(false);
   
@@ -193,11 +190,11 @@ export function CustomerDashboard() {
         {/* Enhanced Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 space-y-4 md:space-y-0">
           <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg">
               <User className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
                 Welcome Back
               </h1>
               <p className="text-slate-500 dark:text-slate-400 mt-1 flex items-center">
@@ -258,16 +255,16 @@ export function CustomerDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="group bg-gradient-to-br from-purple-500/10 to-pink-600/10 border-purple-200/50 hover:shadow-xl transition-all duration-300 transform hover:scale-105 backdrop-blur-sm">
+          <Card className="group bg-gradient-to-br from-sky-500/10 to-cyan-500/10 border-sky-200/50 hover:shadow-xl transition-all duration-300 transform hover:scale-105 backdrop-blur-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-purple-700 dark:text-purple-300">Weekly Activity</CardTitle>
-              <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-xl group-hover:bg-purple-200 transition-colors">
-                <Car className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              <CardTitle className="text-sm font-medium text-sky-700 dark:text-sky-300">Weekly Activity</CardTitle>
+              <div className="p-2 bg-sky-100 dark:bg-sky-900/30 rounded-xl group-hover:bg-sky-200 transition-colors">
+                <Car className="w-5 h-5 text-sky-600 dark:text-sky-400" />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-purple-800 dark:text-purple-200">{safeData.weeklyTrends.currentWeek}</div>
-              <div className="flex items-center text-xs text-purple-600 dark:text-purple-400 mt-2">
+              <div className="text-3xl font-bold text-sky-800 dark:text-sky-200">{safeData.weeklyTrends.currentWeek}</div>
+              <div className="flex items-center text-xs text-sky-600 dark:text-sky-400 mt-2">
                 <Activity className="w-3 h-3 mr-1" />
                 <span className="font-medium">vs {safeData.weeklyTrends.previousWeek} last week</span>
               </div>
@@ -318,7 +315,7 @@ export function CustomerDashboard() {
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl">
+                        <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl">
                           <Car className="w-5 h-5 text-white" />
                         </div>
                         <div>
@@ -393,7 +390,7 @@ export function CustomerDashboard() {
                           </div>
                         </div>
                         
-                        <div className="flex items-start space-x-4 p-4 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 rounded-xl border border-red-200 dark:border-red-800">
+                        <div className="flex items-start space-x-4 p-4 bg-gradient-to-r from-red-50 to-sky-50 dark:from-red-900/20 dark:to-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
                           <div className="p-3 bg-red-500 rounded-full shadow-lg">
                             <MapPin className="w-5 h-5 text-white" />
                           </div>
@@ -423,12 +420,12 @@ export function CustomerDashboard() {
                           <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">Distance</p>
                           <p className="text-sm font-bold text-blue-800 dark:text-blue-200">{(booking as any).distance?.toFixed(1) || 'N/A'} km</p>
                         </div>
-                        <div className="text-center p-3 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl border border-purple-200 dark:border-purple-800">
-                          <div className="w-8 h-8 mx-auto mb-2 bg-purple-500 rounded-full flex items-center justify-center">
+                        <div className="text-center p-3 bg-gradient-to-br from-sky-50 to-sky-100 dark:from-sky-900/20 dark:to-cyan-800/20 rounded-xl border border-sky-200 dark:border-sky-800">
+                          <div className="w-8 h-8 mx-auto mb-2 bg-sky-500 rounded-full flex items-center justify-center">
                             <Clock className="w-4 h-4 text-white" />
                           </div>
-                          <p className="text-xs text-purple-600 dark:text-purple-400 font-medium">Duration</p>
-                          <p className="text-sm font-bold text-purple-800 dark:text-purple-200">{(booking as any).estimated_duration || 'N/A'} min</p>
+                          <p className="text-xs text-sky-600 dark:text-sky-400 font-medium">Duration</p>
+                          <p className="text-sm font-bold text-sky-800 dark:text-sky-200">{(booking as any).estimated_duration || 'N/A'} min</p>
                         </div>
                         <div className="text-center p-3 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl border border-green-200 dark:border-green-800">
                           <div className="w-8 h-8 mx-auto mb-2 bg-green-500 rounded-full flex items-center justify-center">
@@ -458,7 +455,7 @@ export function CustomerDashboard() {
                           
                           <div className="flex items-center space-x-6 p-4 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900/20 rounded-xl">
                             <div className="relative">
-                              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg">
                                 <User className="w-10 h-10 text-white" />
                               </div>
                               {trackingBooking?.id === booking.id && driverLocation && (
@@ -551,12 +548,12 @@ export function CustomerDashboard() {
                               variant={trackingBooking?.id === booking.id ? "default" : "outline"}
                               className={`flex items-center justify-center transition-all duration-300 ${
                                 trackingBooking?.id === booking.id 
-                                  ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg' 
-                                  : 'hover:bg-purple-50 hover:border-purple-300 group'
+                                  ? 'bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 shadow-lg' 
+                                  : 'hover:bg-sky-50 hover:border-sky-300 group'
                               }`}
                               onClick={() => handleTrackDriver(booking)}
                             >
-                              <Navigation className={`w-4 h-4 mr-2 ${trackingBooking?.id === booking.id ? 'text-white' : 'group-hover:text-purple-600'}`} />
+                              <Navigation className={`w-4 h-4 mr-2 ${trackingBooking?.id === booking.id ? 'text-white' : 'group-hover:text-sky-600'}`} />
                               {trackingBooking?.id === booking.id ? '📍 Tracking' : 'Track Driver'}
                             </Button>
                           </div>
@@ -573,7 +570,7 @@ export function CustomerDashboard() {
         {/* Enhanced Driver Tracking Map */}
         {showDriverMap && trackingBooking && (
           <Card className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm mb-8 shadow-2xl border border-white/20">
-            <CardHeader className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-b">
+            <CardHeader className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-b">
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 bg-blue-500 rounded-xl">
@@ -641,7 +638,7 @@ export function CustomerDashboard() {
                     {driverLocation && (
                       <Marker 
                         position={[driverLocation.latitude, driverLocation.longitude]}
-                        icon={driverIcon}
+                        icon={driverIcon as any}
                       >
                         <Popup>
                           <div className="text-center">
@@ -680,12 +677,12 @@ export function CustomerDashboard() {
                   <p className="text-sm font-bold text-green-800 dark:text-green-200 mb-1">Estimated Fare</p>
                   <p className="text-2xl font-bold text-green-700 dark:text-green-300">${trackingBooking.fare?.toFixed(2) || '0.00'}</p>
                 </div>
-                <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl border border-purple-200 dark:border-purple-800">
-                  <div className="w-12 h-12 mx-auto mb-3 bg-purple-500 rounded-full flex items-center justify-center">
+                <div className="text-center p-4 bg-gradient-to-br from-sky-50 to-sky-100 dark:from-sky-900/20 dark:to-cyan-800/20 rounded-xl border border-sky-200 dark:border-sky-800">
+                  <div className="w-12 h-12 mx-auto mb-3 bg-sky-500 rounded-full flex items-center justify-center">
                     <Clock className="w-6 h-6 text-white" />
                   </div>
-                  <p className="text-sm font-bold text-purple-800 dark:text-purple-200 mb-1">Pickup Time</p>
-                  <p className="text-sm font-semibold text-purple-700 dark:text-purple-300">
+                  <p className="text-sm font-bold text-sky-800 dark:text-sky-200 mb-1">Pickup Time</p>
+                  <p className="text-sm font-semibold text-sky-700 dark:text-sky-300">
                     {new Date(trackingBooking.pickup_time).toLocaleTimeString('en-US', {
                       hour: '2-digit',
                       minute: '2-digit'
@@ -700,7 +697,7 @@ export function CustomerDashboard() {
         {/* Enhanced Tabs Section */}
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm shadow-lg border border-gray-200 dark:border-gray-700 p-1">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white transition-all duration-300">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-600 data-[state=active]:text-white transition-all duration-300">
               📊 Overview
             </TabsTrigger>
             <TabsTrigger value="trips" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-600 data-[state=active]:text-white transition-all duration-300">
@@ -709,7 +706,7 @@ export function CustomerDashboard() {
             <TabsTrigger value="spending" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-500 data-[state=active]:to-orange-600 data-[state=active]:text-white transition-all duration-300">
               💰 Spending
             </TabsTrigger>
-            <TabsTrigger value="drivers" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-600 data-[state=active]:text-white transition-all duration-300">
+            <TabsTrigger value="drivers" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-sky-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white transition-all duration-300">
               🗺️ Driver Tracking
             </TabsTrigger>
             <TabsTrigger value="driver-registration" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-cyan-600 data-[state=active]:text-white transition-all duration-300">
@@ -721,7 +718,7 @@ export function CustomerDashboard() {
             {/* Enhanced Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-500">
-                <CardHeader className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-b">
+                <CardHeader className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-b">
                   <CardTitle className="flex items-center space-x-3">
                     <div className="p-2 bg-blue-500 rounded-xl">
                       <BarChart className="w-5 h-5 text-white" />
@@ -972,7 +969,7 @@ export function CustomerDashboard() {
                 </div>
               </CardHeader>
               <CardContent className="p-6">
-                <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+                <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-sky-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
                   <div className="flex items-start space-x-4">
                     <div className="p-2 bg-blue-500 rounded-lg">
                       <Car className="w-6 h-6 text-white" />

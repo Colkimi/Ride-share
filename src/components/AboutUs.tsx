@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 
 export function AboutUs() {
   const [isVisible, setIsVisible] = useState(false);
@@ -42,7 +42,7 @@ export function AboutUs() {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div 
-          className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 opacity-90"
+          className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-blue-800 opacity-90"
         />
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-30"
@@ -95,7 +95,7 @@ export function AboutUs() {
               isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'
             }`}>
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-500 rounded-2xl transform rotate-6"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl transform rotate-6"></div>
                 <div className="relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl">
                   <div className="text-6xl mb-4">🚀</div>
                   <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Innovation First</h3>
@@ -143,7 +143,7 @@ export function AboutUs() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-cyan-600">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
@@ -179,7 +179,7 @@ export function AboutUs() {
             <h2 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-8">
               Built by Innovators
             </h2>
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-slate-800 dark:to-slate-700 rounded-3xl p-12 shadow-xl">
+            <div className="bg-gradient-to-r from-blue-50 to-sky-50 dark:from-slate-800 dark:to-slate-700 rounded-3xl p-12 shadow-xl">
               <div className="text-6xl mb-6">👥</div>
               <p className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-8">
                 Founded by a team of passionate transportation innovators and tech enthusiasts, 
@@ -197,7 +197,7 @@ export function AboutUs() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+      <section className="py-20 bg-gradient-to-br from-gray-900 via-blue-900 to-cyan-900">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
             Ready to Experience the Difference?

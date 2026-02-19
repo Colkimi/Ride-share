@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { type Booking } from '@/api/Bookings';
 import { DriverPickupAPI } from '@/api/DriverPickup';
-import { CheckCircle, XCircle, Loader2, RefreshCw } from 'lucide-react';
+import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useBookingSync } from '@/hooks/useBookingSync';
 
@@ -25,7 +25,7 @@ const DriverPickupControls: React.FC<DriverPickupControlsProps> = ({
   const queryClient = useQueryClient();
 
   // Use the booking sync hook for real-time updates
-  const { data: syncedBooking, forceRefetch } = useBookingSync({
+  const { data: syncedBooking } = useBookingSync({
     bookingId: booking?.id || null,
     enabled: true,
     refetchInterval: 1000, // Poll every 1 second for critical updates
@@ -124,11 +124,6 @@ const DriverPickupControls: React.FC<DriverPickupControlsProps> = ({
       setIsCompleting(false);
       setTimeout(() => setSuccess(null), 3000);
     }
-  };
-
-  const clearMessages = () => {
-    setError(null);
-    setSuccess(null);
   };
 
   return (
