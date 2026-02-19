@@ -51,7 +51,8 @@ const getPaymentIcon = (type: string) => {
 export function CreatePaymentMethodForm({ onSuccess }: CreatePaymentMethodFormProps = {}) {
   const paymentMethodMutation = useMutation({
     mutationFn: async (data: FormData) => {
-      const response = await createPaymentMethod(data)
+      const dataWithUserId = { ...data, userId: data.userId!, payment_type: data.payment_type as any };
+      const response = await createPaymentMethod(dataWithUserId)
       return response
     },
   })

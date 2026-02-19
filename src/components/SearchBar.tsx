@@ -170,7 +170,6 @@ export function SearchBar({ className, placeholder = "Search locations, rides, d
 
 export function MobileSearchBar() {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
 
   return (
     <div className="lg:hidden">

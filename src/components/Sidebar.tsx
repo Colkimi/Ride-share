@@ -1,6 +1,5 @@
 import { 
   Calendar, 
-  Home, 
   Settings, 
   User, 
   HelpCircle, 
@@ -9,7 +8,6 @@ import {
   Star,
   Users,
   Car,
-  CreditCard,
   Shield,
   MapPin,
   FileText,

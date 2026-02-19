@@ -6,8 +6,6 @@ import { Badge } from './ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
 import { 
   Users, 
-  MessageSquare, 
-  Clock, 
   MapPin, 
   Navigation,
   DollarSign,
@@ -15,7 +13,6 @@ import {
   CheckCircle,
   XCircle,
   Calendar,
-  Star,
   Loader2
 } from 'lucide-react'
 import { toast } from 'sonner'

@@ -78,7 +78,7 @@ function RoutingMachine({ pickupLocation, dropoffLocation, driverLocation }: Map
       })
     }).addTo(map);
 
-    routingControl.on('routesfound', function(e) {
+    routingControl.on('routesfound', function(e: any) {
       const routes = e.routes;
       const summary = routes[0].summary;
       console.log('Route found:', {
@@ -87,7 +87,7 @@ function RoutingMachine({ pickupLocation, dropoffLocation, driverLocation }: Map
       });
     });
 
-    routingControl.on('routingerror', function(e) {
+    routingControl.on('routingerror', function(e: any) {
       console.error('Routing error:', e);
     });
 

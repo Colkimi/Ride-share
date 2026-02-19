@@ -113,16 +113,13 @@ export function CreateBookingForm() {
   const [mapVisible, setMapVisible] = useState(true)
   const [showSavedLocations, setShowSavedLocations] = useState(false)
   const [selectedLocationFor, setSelectedLocationFor] = useState<'pickup' | 'dropoff' | null>(null)
-  const [routeData, setRouteData] = useState<any>(null)
-  const [estimatedFare, setEstimatedFare] = useState<number>(0)
-  const [isCalculating, setIsCalculating] = useState(false)
   const [isGettingLocation, setIsGettingLocation] = useState(false)
   const [locationError, setLocationError] = useState<string | null>(null)
 
   // Rideshare state
   const [rideshareEnabled, setRideshareEnabled] = useState(false)
   const [selectedRideshare, setSelectedRideshare] = useState<AvailableRide | null>(null)
-  const [showRideshareOptions, setShowRideshareOptions] = useState(false)
+  const [, setShowRideshareOptions] = useState(false)
 
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -242,7 +239,7 @@ export function CreateBookingForm() {
 
   const bookingMutation = useMutation({
     mutationFn: createBooking,
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success('Booking created successfully!')
 
       queryClient.invalidateQueries({ queryKey: ['bookings'] })
@@ -432,7 +429,7 @@ export function CreateBookingForm() {
     try {
       await rideshareRequestMutation.mutateAsync({
         primaryBookingId: selectedRideshare.bookingId,
-        shareType: ShareType.Shared, // or the appropriate value for your app
+        shareType: ShareType.ROUTE_SHARE,
         sharer_pickup_latitude: pickupLocation?.latitude ?? 0,
         sharer_pickup_longitude: pickupLocation?.longitude ?? 0,
         sharer_dropoff_latitude: dropoffLocation?.latitude ?? 0,
@@ -1117,18 +1114,16 @@ export function CreateBookingForm() {
             </Button>
             {mapVisible && (
               <div className="h-[500px] w-full rounded-2xl shadow-2xl overflow-hidden border-4 border-white/20 backdrop-blur-sm">
-                <MapWithRoute
-                  pickupLocation={
-                    pickupLocation
-                      ? { latitude: pickupLocation.latitude, longitude: pickupLocation.longitude, name: pickupLocation.name }
-                      : null
-                  }
-                  dropoffLocation={
-                    dropoffLocation
-                      ? { latitude: dropoffLocation.latitude, longitude: dropoffLocation.longitude, name: dropoffLocation.name }
-                      : null
-                  }
-                />
+                {pickupLocation && dropoffLocation && (
+                  <MapWithRoute
+                    pickupLocation={
+                      { latitude: pickupLocation.latitude, longitude: pickupLocation.longitude, name: pickupLocation.name }
+                    }
+                    dropoffLocation={
+                      { latitude: dropoffLocation.latitude, longitude: dropoffLocation.longitude, name: dropoffLocation.name }
+                    }
+                  />
+                )}
               </div>
             )}
           </div>

@@ -1,6 +1,5 @@
 ﻿import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useDriverLocation } from '@/hooks/useDriverLocation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { type Booking } from '@/api/Bookings';
 import { getDriverByUserId, type Driver } from '@/api/Driver';
@@ -24,9 +23,7 @@ import {
   TrendingUp,
   Calendar,
   MapPin,
-  Map,
-  Edit3,
-  Trash2
+  Map
 } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import {
@@ -35,48 +32,13 @@ import {
   acceptDriverBooking,
   rejectDriverBooking,
 } from '@/api/Driver';
-import MapWithRoute from './MapWithRoute';
-import DriverLocationSimulator from './DriverLocationSimulator';
-import { LocationSearch } from './LocationSearch';
-import type { Label, Location } from '../api/Location';
-
-interface SavedLocation {
-  id: number
-  label: string
-  address: string
-  latitude: number
-  longitude: number
-  type: 'home' | 'work' | 'custom'
-}
 
 const DriverDashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('overview');
   const [isOnline, setIsOnline] = useState(false);
-  const [currentEarnings, setCurrentEarnings] = useState(0);
-  const [completedRides, setCompletedRides] = useState(0);
+  const [, setActiveTab] = useState('overview');
   const queryClient = useQueryClient()
-  const [savedLocations, setSavedLocations] = useState<SavedLocation[]>([
-    {
-      id: 1,
-      label: 'Home',
-      address: '123 Main St, City',
-      latitude: 40.7128,
-      longitude: -74.0060,
-      type: 'home'
-    },
-    {
-      id: 2,
-      label: 'Work',
-      address: '456 Business Ave, City',
-      latitude: 40.7589,
-      longitude: -73.9851,
-      type: 'work'
-    }
-  ]);
-  const [showLocationForm, setShowLocationForm] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
 
   const token = localStorage.getItem('accessToken') || '';
 
@@ -85,9 +47,6 @@ const DriverDashboard: React.FC = () => {
     queryFn: () => getDriverByUserId(user?.userId || 0),
     enabled: !!user?.userId,
   });
-
-  const driverId = driverData?.driver_id || 4029;
-  const liveLocation = useDriverLocation(driverId);
 
   const { data: vehicles } = useQuery({
     queryKey: ['vehicle'],
@@ -188,29 +147,6 @@ const rejectMutation = useMutation({
   const handleOnlineToggle = async (checked: boolean) => {
     setIsOnline(checked);
     console.log('Driver status updated:', checked);
-  };
-
-  const handleLocationSelect = (loc: { label: string; coordinates: { latitude: number; longitude: number } }) => {
-    setSelectedLocation({
-      label: loc.label as Label,
-      address: loc.label,
-      latitude: loc.coordinates.latitude,
-      longitude: loc.coordinates.longitude,
-      is_default: false,
-    });
-  };
-
-  const addSavedLocation = (location: Omit<SavedLocation, 'id'>) => {
-    const newLocation = {
-      ...location,
-      id: Date.now()
-    };
-    setSavedLocations(prev => [...prev, newLocation]);
-    setShowLocationForm(false);
-  };
-
-  const deleteSavedLocation = (id: number) => {
-    setSavedLocations(prev => prev.filter(loc => loc.id !== id));
   };
 
   // Prepare chart data from bookings
@@ -871,105 +807,5 @@ const rejectMutation = useMutation({
     </div>
   );
 };
-
-// Saved Location Form Component
-interface SavedLocationFormProps {
-  onSave: (location: Omit<SavedLocation, 'id'>) => void
-  onCancel: () => void
-}
-
-function SavedLocationForm({ onSave, onCancel }: SavedLocationFormProps) {
-  const [formData, setFormData] = useState({
-    label: '',
-    address: '',
-    latitude: 0,
-    longitude: 0,
-    type: 'custom' as 'home' | 'work' | 'custom'
-  })
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (formData.label && formData.address) {
-      onSave(formData)
-    }
-  }
-
-  return (
-    <div className="mt-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Location Type</label>
-          <select
-            value={formData.type}
-            onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as any }))}
-            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
-          >
-            <option value="home">Home</option>
-            <option value="work">Work</option>
-            <option value="custom">Custom</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Label</label>
-          <input
-            type="text"
-            value={formData.label}
-            onChange={(e) => setFormData(prev => ({ ...prev, label: e.target.value }))}
-            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
-            placeholder="e.g., Home, Office, Gym"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Address</label>
-          <input
-            type="text"
-            value={formData.address}
-            onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
-            placeholder="Enter full address"
-            required
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Latitude</label>
-            <input
-              type="number"
-              step="any"
-              value={formData.latitude}
-              onChange={(e) => setFormData(prev => ({ ...prev, latitude: parseFloat(e.target.value) }))}
-              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Longitude</label>
-            <input
-              type="number"
-              step="any"
-              value={formData.longitude}
-              onChange={(e) => setFormData(prev => ({ ...prev, longitude: parseFloat(e.target.value) }))}
-              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
-              required
-            />
-          </div>
-        </div>
-
-        <div className="flex space-x-3">
-          <Button type="submit" className="bg-green-600 hover:bg-green-700">
-            Save Location
-          </Button>
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-        </div>
-      </form>
-    </div>
-  )
-}
 
 export default DriverDashboard;

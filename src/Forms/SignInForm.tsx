@@ -6,7 +6,6 @@ import { useMutation } from '@tanstack/react-query';
 import { loginUser, type LoginUser } from '@/api/Authenticate';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from '@tanstack/react-router';
-import { Dashboard } from '@/routes/dashboard';
 
 const formSchema = z.object({
   email: z
@@ -54,7 +53,7 @@ export function SignInForm() {
       try {
         const loginResponse = await loginMutation.mutateAsync(res.data);
         
-        const userData = login(loginResponse.accessToken, loginResponse.refreshToken);
+        login(loginResponse.accessToken, loginResponse.refreshToken);
         
         toast.success(`Welcome back!`);
         form.reset();

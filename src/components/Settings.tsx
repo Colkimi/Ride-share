@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useAuth } from '@/hooks/useAuth';
 import { ModernCard, ModernCardHeader, ModernCardTitle, ModernCardContent } from '@/components/ui/modern-card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -14,15 +13,12 @@ import {
   Monitor,
   User,
   Globe,
-  Lock,
-  Smartphone,
-  Mail
+  Lock
 } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { useTheme } from '@/components/ThemeProvider';
 
 export default function Settings() {
-  const { user } = useAuth();
   const { theme, setTheme } = useTheme();
   
   const [settings, setSettings] = useState({
